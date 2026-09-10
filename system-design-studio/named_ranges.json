@@ -1,0 +1,632 @@
+{
+  "ACTIONS_PER_SESSION": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B8",
+    "default_value": 30
+  },
+  "Actual_DB_QPS": {
+    "sheet": "09_Database_Design",
+    "cell": "C10",
+    "default_value": 4800
+  },
+  "Auto_Scale_Cooldown_sec": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B93",
+    "default_value": 60
+  },
+  "Auto_Scale_Trigger_CPU": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B92",
+    "default_value": 70
+  },
+  "AVG_MSG_SIZE_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B20",
+    "default_value": 1
+  },
+  "AVG_REQUEST_SIZE_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B17",
+    "default_value": 2
+  },
+  "AVG_RESPONSE_SIZE_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B16",
+    "default_value": 50
+  },
+  "BROKER_CAPACITY_MBPS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B24",
+    "default_value": 500
+  },
+  "BROKER_MULTIPLE": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B26",
+    "default_value": 6
+  },
+  "CACHE_HIT_PCT": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B14",
+    "default_value": 95
+  },
+  "CACHE_OVERHEAD_FACTOR": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B44",
+    "default_value": 1.3
+  },
+  "CATALOG_ENTRY_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B41",
+    "default_value": 3
+  },
+  "CATALOG_SKUS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B40",
+    "default_value": 500000
+  },
+  "CDN_Cache_Hit_Ratio_Pct": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B5",
+    "default_value": 98
+  },
+  "CDN_Edge_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B73",
+    "default_value": 10
+  },
+  "CDN_Origin_Miss_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B74",
+    "default_value": 30
+  },
+  "CDN_PoPs_Global": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B7",
+    "default_value": 200
+  },
+  "Compression_Reduction_Pct": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B8",
+    "default_value": 70
+  },
+  "CONSUMER_PER_PARTITION_MBPS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B23",
+    "default_value": 5
+  },
+  "Cores_Per_App_Instance": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B50",
+    "default_value": 4
+  },
+  "Cost_App_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B104",
+    "default_value": 0.17
+  },
+  "Cost_Broker_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B103",
+    "default_value": 0.384
+  },
+  "Cost_CDN_Per_GB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B112",
+    "default_value": 0.085
+  },
+  "Cost_DB_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B105",
+    "default_value": 0.504
+  },
+  "Cost_Egress_Per_GB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B110",
+    "default_value": 0.09
+  },
+  "Cost_Gateway_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B107",
+    "default_value": 0.17
+  },
+  "Cost_Hours_Month": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B109",
+    "default_value": 730
+  },
+  "Cost_NLB_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B108",
+    "default_value": 0.0225
+  },
+  "Cost_Redis_hr": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B106",
+    "default_value": 0.226
+  },
+  "Cost_S3_Per_TB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B111",
+    "default_value": 23
+  },
+  "Daily_Egress_GB": {
+    "sheet": "02_User_Metrics",
+    "cell": "C12",
+    "default_value": 2861.02294921875
+  },
+  "Daily_Requests": {
+    "sheet": "02_User_Metrics",
+    "cell": "C8",
+    "default_value": 60000000
+  },
+  "DAU": {
+    "sheet": "02_User_Metrics",
+    "cell": "C4",
+    "default_value": 2000000
+  },
+  "DAU_PCT": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B6",
+    "default_value": 20
+  },
+  "DB_CONN_MULTIPLIER": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B32",
+    "default_value": 2
+  },
+  "DB_CONN_OVERHEAD": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B33",
+    "default_value": 1
+  },
+  "DB_HOT_RETENTION_DAYS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B31",
+    "default_value": 30
+  },
+  "DB_IOPS_PER_QUERY": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B36",
+    "default_value": 1.2
+  },
+  "DB_Query_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B77",
+    "default_value": 5
+  },
+  "DB_Read_Replicas": {
+    "sheet": "09_Database_Design",
+    "cell": "C40",
+    "default_value": 4
+  },
+  "DB_READ_REPLICA_QPS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B34",
+    "default_value": 5000
+  },
+  "DB_Recommended_IOPS": {
+    "sheet": "09_Database_Design",
+    "cell": "C15",
+    "default_value": 11520
+  },
+  "DB_ROW_SIZE_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B30",
+    "default_value": 2
+  },
+  "DB_SSD_IOPS_PER_GB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B35",
+    "default_value": 50
+  },
+  "DB_Storage_GB": {
+    "sheet": "09_Database_Design",
+    "cell": "C33",
+    "default_value": 29663.0859375
+  },
+  "DDoS_Peak_RPS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B91",
+    "default_value": 1000000
+  },
+  "DLQ_Msgs_Per_Day": {
+    "sheet": "11_DLQ_Error_Handling",
+    "cell": "C11",
+    "default_value": 1782060
+  },
+  "DLQ_Retention_Days": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B85",
+    "default_value": 30
+  },
+  "DNS_Lookup_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B72",
+    "default_value": 5
+  },
+  "Edge_Node_Capacity_RPS": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B6",
+    "default_value": 5000
+  },
+  "Gateway_AZs": {
+    "sheet": "04_API_Gateway",
+    "cell": "C7",
+    "default_value": 3
+  },
+  "Gateway_CPU_Util_Target": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B62",
+    "default_value": 60
+  },
+  "Gateway_Effective_RPS": {
+    "sheet": "04_API_Gateway",
+    "cell": "C5",
+    "default_value": 1800
+  },
+  "Gateway_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B57",
+    "default_value": 3
+  },
+  "Gateway_Instances_Sized": {
+    "sheet": "04_API_Gateway",
+    "cell": "C9",
+    "default_value": 9
+  },
+  "Gateway_Latency_ms": {
+    "sheet": "04_API_Gateway",
+    "cell": "C10",
+    "default_value": 3.5
+  },
+  "Gateway_Overhead_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B63",
+    "default_value": 3
+  },
+  "Gateway_RPS_Capacity": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B61",
+    "default_value": 3000
+  },
+  "HOT_SKU_COUNT": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B42",
+    "default_value": 100000
+  },
+  "HOT_SKU_ENTRY_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B43",
+    "default_value": 1
+  },
+  "Inventory_Svc_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B54",
+    "default_value": 4
+  },
+  "Kafka_Brokers": {
+    "sheet": "08_Kafka_Design",
+    "cell": "C17",
+    "default_value": 3
+  },
+  "Kafka_Internal_MBps": {
+    "sheet": "08_Kafka_Design",
+    "cell": "C6",
+    "default_value": 19.53125
+  },
+  "Kafka_MBps": {
+    "sheet": "08_Kafka_Design",
+    "cell": "C5",
+    "default_value": 6.51041666666667
+  },
+  "Kafka_Partitions": {
+    "sheet": "08_Kafka_Design",
+    "cell": "C16",
+    "default_value": 6
+  },
+  "LB_Forward_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B75",
+    "default_value": 2
+  },
+  "LB_Instances": {
+    "sheet": "05_Load_Balancer",
+    "cell": "C5",
+    "default_value": 2
+  },
+  "Load_Shed_Threshold_Pct": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B94",
+    "default_value": 90
+  },
+  "Log_Retention_Days": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B98",
+    "default_value": 30
+  },
+  "Log_Size_Per_Request_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B100",
+    "default_value": 2
+  },
+  "MAU": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B5",
+    "default_value": 10000000
+  },
+  "Max_Retries": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B82",
+    "default_value": 3
+  },
+  "Metrics_Retention_Days": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B97",
+    "default_value": 15
+  },
+  "MIN_BROKERS_HA": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B25",
+    "default_value": 3
+  },
+  "Monthly_Egress_TB": {
+    "sheet": "02_User_Metrics",
+    "cell": "C13",
+    "default_value": 83.8190317153931
+  },
+  "Monthly_Requests": {
+    "sheet": "02_User_Metrics",
+    "cell": "C9",
+    "default_value": 1800000000
+  },
+  "Notification_Svc_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B55",
+    "default_value": 3
+  },
+  "Order_Svc_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B52",
+    "default_value": 6
+  },
+  "Origin_Dynamic_RPS": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "C18",
+    "default_value": 133.333333333333
+  },
+  "P95_Latency_ms": {
+    "sheet": "07_Network_Latency",
+    "cell": "C21",
+    "default_value": 92.16
+  },
+  "Payment_Svc_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B53",
+    "default_value": 4
+  },
+  "PCU": {
+    "sheet": "02_User_Metrics",
+    "cell": "C5",
+    "default_value": 400000
+  },
+  "Peak_Bandwidth_MBps": {
+    "sheet": "02_User_Metrics",
+    "cell": "C10",
+    "default_value": 325.520833333333
+  },
+  "PEAK_CONCURRENT_PCT": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B7",
+    "default_value": 20
+  },
+  "PEAK_DURATION_SEC": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B9",
+    "default_value": 3600
+  },
+  "Peak_RPS": {
+    "sheet": "02_User_Metrics",
+    "cell": "C7",
+    "default_value": 6666.66666666667
+  },
+  "PRODUCER_PER_PARTITION_MBPS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B22",
+    "default_value": 10
+  },
+  "QUERIES_PER_API_CALL": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B15",
+    "default_value": 3
+  },
+  "RAM_Per_App_Instance_GB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B51",
+    "default_value": 8
+  },
+  "Rate_Limit_Anonymous_RPM": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B67",
+    "default_value": 10
+  },
+  "Rate_Limit_Premium_RPM": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B69",
+    "default_value": 500
+  },
+  "Rate_Limit_User_RPM": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B68",
+    "default_value": 100
+  },
+  "Raw_RPS": {
+    "sheet": "02_User_Metrics",
+    "cell": "C6",
+    "default_value": 3333.33333333333
+  },
+  "READ_WRITE_SPLIT_READ_PCT": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B13",
+    "default_value": 80
+  },
+  "Redis_Cluster_GB": {
+    "sheet": "10_Cache_Redis",
+    "cell": "C11",
+    "default_value": 9
+  },
+  "REDIS_HEADROOM": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B46",
+    "default_value": 1.5
+  },
+  "Redis_Nodes": {
+    "sheet": "10_Cache_Redis",
+    "cell": "C17",
+    "default_value": 3
+  },
+  "REDIS_OPS_PER_NODE": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B47",
+    "default_value": 100000
+  },
+  "Redis_Query_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B78",
+    "default_value": 1
+  },
+  "REDIS_SHARDS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B45",
+    "default_value": 3
+  },
+  "REPLICATION_FACTOR": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B21",
+    "default_value": 3
+  },
+  "Reprocess_Batch_Size": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B86",
+    "default_value": 1000
+  },
+  "Reprocess_Interval_min": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B87",
+    "default_value": 15
+  },
+  "Retry_Backoff_Base_sec": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B83",
+    "default_value": 5
+  },
+  "Retry_Backoff_Multiplier": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B84",
+    "default_value": 2
+  },
+  "RPS_Per_App_Instance": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B58",
+    "default_value": 2000
+  },
+  "SAFETY_BUFFER": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B10",
+    "default_value": 2
+  },
+  "Scenario_Cell": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B2",
+    "default_value": "Normal"
+  },
+  "Search_Svc_Instances": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B56",
+    "default_value": 3
+  },
+  "Service_Process_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B76",
+    "default_value": 20
+  },
+  "Service_Worker_Hit_Pct": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B9",
+    "default_value": 40
+  },
+  "SESSION_SIZE_KB": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B39",
+    "default_value": 1.5
+  },
+  "SLA_P95_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B79",
+    "default_value": 200
+  },
+  "Spike_Multiplier": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B90",
+    "default_value": 1
+  },
+  "SSL_Handshake_ms": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B64",
+    "default_value": 5
+  },
+  "SSL_Rate_Pct": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B65",
+    "default_value": 10
+  },
+  "Static_Asset_MB_Per_User": {
+    "sheet": "03_Frontend_CDN",
+    "cell": "B4",
+    "default_value": 2
+  },
+  "TOPIC_RETENTION_DAYS": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B27",
+    "default_value": 7
+  },
+  "Total_Annual_Cost": {
+    "sheet": "16_Cost_Estimator",
+    "cell": "F20",
+    "default_value": 203069.510877686
+  },
+  "Total_App_Instances": {
+    "sheet": "06_Backend_Services",
+    "cell": "B10",
+    "default_value": 29
+  },
+  "Total_Monthly_Cost": {
+    "sheet": "16_Cost_Estimator",
+    "cell": "E20",
+    "default_value": 16922.4592398071
+  },
+  "Total_RAM_GB": {
+    "sheet": "06_Backend_Services",
+    "cell": "D10",
+    "default_value": 244
+  },
+  "Total_RPS_Capacity": {
+    "sheet": "06_Backend_Services",
+    "cell": "F10",
+    "default_value": 74500
+  },
+  "Total_vCPU": {
+    "sheet": "06_Backend_Services",
+    "cell": "C10",
+    "default_value": 110
+  },
+  "Trace_Sample_Rate_Pct": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B99",
+    "default_value": 1
+  },
+  "WAF_Rules": {
+    "sheet": "01_Master_Inputs",
+    "cell": "B66",
+    "default_value": 20
+  }
+}

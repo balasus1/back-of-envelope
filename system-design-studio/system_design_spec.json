@@ -1,0 +1,2412 @@
+{
+  "meta": {
+    "title": "System Design Master Calculator - machine-readable spec",
+    "anchor_chain": "MAU -> DAU -> PCU -> Raw_RPS -> Peak_RPS (everything else derives from Peak_RPS)",
+    "scenario_table": {
+      "Normal": {
+        "DAU_PCT": 20,
+        "PEAK_CONCURRENT_PCT": 20,
+        "Spike_Multiplier": 1
+      },
+      "Flash Sale": {
+        "DAU_PCT": 30,
+        "PEAK_CONCURRENT_PCT": 30,
+        "Spike_Multiplier": 5
+      },
+      "Black Friday": {
+        "DAU_PCT": 50,
+        "PEAK_CONCURRENT_PCT": 50,
+        "Spike_Multiplier": 10
+      },
+      "Cyber Monday": {
+        "DAU_PCT": 60,
+        "PEAK_CONCURRENT_PCT": 60,
+        "Spike_Multiplier": 15
+      },
+      "DDoS": {
+        "DAU_PCT": 20,
+        "PEAK_CONCURRENT_PCT": 100,
+        "Spike_Multiplier": 100
+      }
+    }
+  },
+  "inputs": {
+    "ACTIONS_PER_SESSION": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B8",
+      "default_value": 30
+    },
+    "Actual_DB_QPS": {
+      "sheet": "09_Database_Design",
+      "cell": "C10",
+      "default_value": 4800
+    },
+    "Auto_Scale_Cooldown_sec": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B93",
+      "default_value": 60
+    },
+    "Auto_Scale_Trigger_CPU": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B92",
+      "default_value": 70
+    },
+    "AVG_MSG_SIZE_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B20",
+      "default_value": 1
+    },
+    "AVG_REQUEST_SIZE_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B17",
+      "default_value": 2
+    },
+    "AVG_RESPONSE_SIZE_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B16",
+      "default_value": 50
+    },
+    "BROKER_CAPACITY_MBPS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B24",
+      "default_value": 500
+    },
+    "BROKER_MULTIPLE": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B26",
+      "default_value": 6
+    },
+    "CACHE_HIT_PCT": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B14",
+      "default_value": 95
+    },
+    "CACHE_OVERHEAD_FACTOR": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B44",
+      "default_value": 1.3
+    },
+    "CATALOG_ENTRY_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B41",
+      "default_value": 3
+    },
+    "CATALOG_SKUS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B40",
+      "default_value": 500000
+    },
+    "CDN_Cache_Hit_Ratio_Pct": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B5",
+      "default_value": 98
+    },
+    "CDN_Edge_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B73",
+      "default_value": 10
+    },
+    "CDN_Origin_Miss_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B74",
+      "default_value": 30
+    },
+    "CDN_PoPs_Global": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B7",
+      "default_value": 200
+    },
+    "Compression_Reduction_Pct": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B8",
+      "default_value": 70
+    },
+    "CONSUMER_PER_PARTITION_MBPS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B23",
+      "default_value": 5
+    },
+    "Cores_Per_App_Instance": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B50",
+      "default_value": 4
+    },
+    "Cost_App_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B104",
+      "default_value": 0.17
+    },
+    "Cost_Broker_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B103",
+      "default_value": 0.384
+    },
+    "Cost_CDN_Per_GB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B112",
+      "default_value": 0.085
+    },
+    "Cost_DB_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B105",
+      "default_value": 0.504
+    },
+    "Cost_Egress_Per_GB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B110",
+      "default_value": 0.09
+    },
+    "Cost_Gateway_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B107",
+      "default_value": 0.17
+    },
+    "Cost_Hours_Month": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B109",
+      "default_value": 730
+    },
+    "Cost_NLB_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B108",
+      "default_value": 0.0225
+    },
+    "Cost_Redis_hr": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B106",
+      "default_value": 0.226
+    },
+    "Cost_S3_Per_TB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B111",
+      "default_value": 23
+    },
+    "Daily_Egress_GB": {
+      "sheet": "02_User_Metrics",
+      "cell": "C12",
+      "default_value": 2861.02294921875
+    },
+    "Daily_Requests": {
+      "sheet": "02_User_Metrics",
+      "cell": "C8",
+      "default_value": 60000000
+    },
+    "DAU": {
+      "sheet": "02_User_Metrics",
+      "cell": "C4",
+      "default_value": 2000000
+    },
+    "DAU_PCT": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B6",
+      "default_value": 20
+    },
+    "DB_CONN_MULTIPLIER": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B32",
+      "default_value": 2
+    },
+    "DB_CONN_OVERHEAD": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B33",
+      "default_value": 1
+    },
+    "DB_HOT_RETENTION_DAYS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B31",
+      "default_value": 30
+    },
+    "DB_IOPS_PER_QUERY": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B36",
+      "default_value": 1.2
+    },
+    "DB_Query_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B77",
+      "default_value": 5
+    },
+    "DB_Read_Replicas": {
+      "sheet": "09_Database_Design",
+      "cell": "C40",
+      "default_value": 4
+    },
+    "DB_READ_REPLICA_QPS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B34",
+      "default_value": 5000
+    },
+    "DB_Recommended_IOPS": {
+      "sheet": "09_Database_Design",
+      "cell": "C15",
+      "default_value": 11520
+    },
+    "DB_ROW_SIZE_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B30",
+      "default_value": 2
+    },
+    "DB_SSD_IOPS_PER_GB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B35",
+      "default_value": 50
+    },
+    "DB_Storage_GB": {
+      "sheet": "09_Database_Design",
+      "cell": "C33",
+      "default_value": 29663.0859375
+    },
+    "DDoS_Peak_RPS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B91",
+      "default_value": 1000000
+    },
+    "DLQ_Msgs_Per_Day": {
+      "sheet": "11_DLQ_Error_Handling",
+      "cell": "C11",
+      "default_value": 1782060
+    },
+    "DLQ_Retention_Days": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B85",
+      "default_value": 30
+    },
+    "DNS_Lookup_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B72",
+      "default_value": 5
+    },
+    "Edge_Node_Capacity_RPS": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B6",
+      "default_value": 5000
+    },
+    "Gateway_AZs": {
+      "sheet": "04_API_Gateway",
+      "cell": "C7",
+      "default_value": 3
+    },
+    "Gateway_CPU_Util_Target": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B62",
+      "default_value": 60
+    },
+    "Gateway_Effective_RPS": {
+      "sheet": "04_API_Gateway",
+      "cell": "C5",
+      "default_value": 1800
+    },
+    "Gateway_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B57",
+      "default_value": 3
+    },
+    "Gateway_Instances_Sized": {
+      "sheet": "04_API_Gateway",
+      "cell": "C9",
+      "default_value": 9
+    },
+    "Gateway_Latency_ms": {
+      "sheet": "04_API_Gateway",
+      "cell": "C10",
+      "default_value": 3.5
+    },
+    "Gateway_Overhead_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B63",
+      "default_value": 3
+    },
+    "Gateway_RPS_Capacity": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B61",
+      "default_value": 3000
+    },
+    "HOT_SKU_COUNT": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B42",
+      "default_value": 100000
+    },
+    "HOT_SKU_ENTRY_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B43",
+      "default_value": 1
+    },
+    "Inventory_Svc_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B54",
+      "default_value": 4
+    },
+    "Kafka_Brokers": {
+      "sheet": "08_Kafka_Design",
+      "cell": "C17",
+      "default_value": 3
+    },
+    "Kafka_Internal_MBps": {
+      "sheet": "08_Kafka_Design",
+      "cell": "C6",
+      "default_value": 19.53125
+    },
+    "Kafka_MBps": {
+      "sheet": "08_Kafka_Design",
+      "cell": "C5",
+      "default_value": 6.51041666666667
+    },
+    "Kafka_Partitions": {
+      "sheet": "08_Kafka_Design",
+      "cell": "C16",
+      "default_value": 6
+    },
+    "LB_Forward_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B75",
+      "default_value": 2
+    },
+    "LB_Instances": {
+      "sheet": "05_Load_Balancer",
+      "cell": "C5",
+      "default_value": 2
+    },
+    "Load_Shed_Threshold_Pct": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B94",
+      "default_value": 90
+    },
+    "Log_Retention_Days": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B98",
+      "default_value": 30
+    },
+    "Log_Size_Per_Request_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B100",
+      "default_value": 2
+    },
+    "MAU": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B5",
+      "default_value": 10000000
+    },
+    "Max_Retries": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B82",
+      "default_value": 3
+    },
+    "Metrics_Retention_Days": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B97",
+      "default_value": 15
+    },
+    "MIN_BROKERS_HA": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B25",
+      "default_value": 3
+    },
+    "Monthly_Egress_TB": {
+      "sheet": "02_User_Metrics",
+      "cell": "C13",
+      "default_value": 83.8190317153931
+    },
+    "Monthly_Requests": {
+      "sheet": "02_User_Metrics",
+      "cell": "C9",
+      "default_value": 1800000000
+    },
+    "Notification_Svc_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B55",
+      "default_value": 3
+    },
+    "Order_Svc_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B52",
+      "default_value": 6
+    },
+    "Origin_Dynamic_RPS": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "C18",
+      "default_value": 133.333333333333
+    },
+    "P95_Latency_ms": {
+      "sheet": "07_Network_Latency",
+      "cell": "C21",
+      "default_value": 92.16
+    },
+    "Payment_Svc_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B53",
+      "default_value": 4
+    },
+    "PCU": {
+      "sheet": "02_User_Metrics",
+      "cell": "C5",
+      "default_value": 400000
+    },
+    "Peak_Bandwidth_MBps": {
+      "sheet": "02_User_Metrics",
+      "cell": "C10",
+      "default_value": 325.520833333333
+    },
+    "PEAK_CONCURRENT_PCT": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B7",
+      "default_value": 20
+    },
+    "PEAK_DURATION_SEC": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B9",
+      "default_value": 3600
+    },
+    "Peak_RPS": {
+      "sheet": "02_User_Metrics",
+      "cell": "C7",
+      "default_value": 6666.66666666667
+    },
+    "PRODUCER_PER_PARTITION_MBPS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B22",
+      "default_value": 10
+    },
+    "QUERIES_PER_API_CALL": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B15",
+      "default_value": 3
+    },
+    "RAM_Per_App_Instance_GB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B51",
+      "default_value": 8
+    },
+    "Rate_Limit_Anonymous_RPM": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B67",
+      "default_value": 10
+    },
+    "Rate_Limit_Premium_RPM": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B69",
+      "default_value": 500
+    },
+    "Rate_Limit_User_RPM": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B68",
+      "default_value": 100
+    },
+    "Raw_RPS": {
+      "sheet": "02_User_Metrics",
+      "cell": "C6",
+      "default_value": 3333.33333333333
+    },
+    "READ_WRITE_SPLIT_READ_PCT": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B13",
+      "default_value": 80
+    },
+    "Redis_Cluster_GB": {
+      "sheet": "10_Cache_Redis",
+      "cell": "C11",
+      "default_value": 9
+    },
+    "REDIS_HEADROOM": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B46",
+      "default_value": 1.5
+    },
+    "Redis_Nodes": {
+      "sheet": "10_Cache_Redis",
+      "cell": "C17",
+      "default_value": 3
+    },
+    "REDIS_OPS_PER_NODE": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B47",
+      "default_value": 100000
+    },
+    "Redis_Query_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B78",
+      "default_value": 1
+    },
+    "REDIS_SHARDS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B45",
+      "default_value": 3
+    },
+    "REPLICATION_FACTOR": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B21",
+      "default_value": 3
+    },
+    "Reprocess_Batch_Size": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B86",
+      "default_value": 1000
+    },
+    "Reprocess_Interval_min": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B87",
+      "default_value": 15
+    },
+    "Retry_Backoff_Base_sec": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B83",
+      "default_value": 5
+    },
+    "Retry_Backoff_Multiplier": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B84",
+      "default_value": 2
+    },
+    "RPS_Per_App_Instance": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B58",
+      "default_value": 2000
+    },
+    "SAFETY_BUFFER": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B10",
+      "default_value": 2
+    },
+    "Scenario_Cell": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B2",
+      "default_value": "Normal"
+    },
+    "Search_Svc_Instances": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B56",
+      "default_value": 3
+    },
+    "Service_Process_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B76",
+      "default_value": 20
+    },
+    "Service_Worker_Hit_Pct": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B9",
+      "default_value": 40
+    },
+    "SESSION_SIZE_KB": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B39",
+      "default_value": 1.5
+    },
+    "SLA_P95_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B79",
+      "default_value": 200
+    },
+    "Spike_Multiplier": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B90",
+      "default_value": 1
+    },
+    "SSL_Handshake_ms": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B64",
+      "default_value": 5
+    },
+    "SSL_Rate_Pct": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B65",
+      "default_value": 10
+    },
+    "Static_Asset_MB_Per_User": {
+      "sheet": "03_Frontend_CDN",
+      "cell": "B4",
+      "default_value": 2
+    },
+    "TOPIC_RETENTION_DAYS": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B27",
+      "default_value": 7
+    },
+    "Total_Annual_Cost": {
+      "sheet": "16_Cost_Estimator",
+      "cell": "F20",
+      "default_value": 203069.510877686
+    },
+    "Total_App_Instances": {
+      "sheet": "06_Backend_Services",
+      "cell": "B10",
+      "default_value": 29
+    },
+    "Total_Monthly_Cost": {
+      "sheet": "16_Cost_Estimator",
+      "cell": "E20",
+      "default_value": 16922.4592398071
+    },
+    "Total_RAM_GB": {
+      "sheet": "06_Backend_Services",
+      "cell": "D10",
+      "default_value": 244
+    },
+    "Total_RPS_Capacity": {
+      "sheet": "06_Backend_Services",
+      "cell": "F10",
+      "default_value": 74500
+    },
+    "Total_vCPU": {
+      "sheet": "06_Backend_Services",
+      "cell": "C10",
+      "default_value": 110
+    },
+    "Trace_Sample_Rate_Pct": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B99",
+      "default_value": 1
+    },
+    "WAF_Rules": {
+      "sheet": "01_Master_Inputs",
+      "cell": "B66",
+      "default_value": 20
+    }
+  },
+  "calculations_by_sheet": {
+    "02_User_Metrics": [
+      {
+        "sheet": "02_User_Metrics",
+        "row": 4,
+        "step": "1. DAU",
+        "formula_text": "MAU * DAU_PCT/100",
+        "excel_formula": "=MAU*DAU_PCT/100",
+        "computed_value_at_defaults": 2000000,
+        "notes": "Daily active users",
+        "depends_on_named_ranges": [
+          "DAU_PCT",
+          "MAU"
+        ],
+        "output_named_range": "DAU",
+        "js_expression": "MAU*DAU_PCT/100"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 5,
+        "step": "2. Peak Concurrent Users (PCU)",
+        "formula_text": "DAU * PEAK_CONCURRENT_PCT/100",
+        "excel_formula": "=DAU*PEAK_CONCURRENT_PCT/100",
+        "computed_value_at_defaults": 400000,
+        "notes": "Users online simultaneously at peak",
+        "depends_on_named_ranges": [
+          "DAU",
+          "PEAK_CONCURRENT_PCT"
+        ],
+        "output_named_range": "PCU",
+        "js_expression": "DAU*PEAK_CONCURRENT_PCT/100"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 6,
+        "step": "3. Raw API RPS",
+        "formula_text": "(PCU * ACTIONS_PER_SESSION) / PEAK_DURATION_SEC",
+        "excel_formula": "=PCU*ACTIONS_PER_SESSION/PEAK_DURATION_SEC",
+        "computed_value_at_defaults": 3333.33333333333,
+        "notes": "Unbuffered request rate",
+        "depends_on_named_ranges": [
+          "ACTIONS_PER_SESSION",
+          "PCU",
+          "PEAK_DURATION_SEC"
+        ],
+        "output_named_range": "Raw_RPS",
+        "js_expression": "PCU*ACTIONS_PER_SESSION/PEAK_DURATION_SEC"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 7,
+        "step": "4. Peak API RPS",
+        "formula_text": "Raw RPS * SAFETY_BUFFER",
+        "excel_formula": "=Raw_RPS*SAFETY_BUFFER",
+        "computed_value_at_defaults": 6666.66666666667,
+        "notes": "This is the anchor number for every downstream sheet",
+        "depends_on_named_ranges": [
+          "Raw_RPS",
+          "SAFETY_BUFFER"
+        ],
+        "output_named_range": "Peak_RPS",
+        "js_expression": "Raw_RPS*SAFETY_BUFFER"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 8,
+        "step": "5. Daily Requests",
+        "formula_text": "DAU * ACTIONS_PER_SESSION",
+        "excel_formula": "=DAU*ACTIONS_PER_SESSION",
+        "computed_value_at_defaults": 60000000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "ACTIONS_PER_SESSION",
+          "DAU"
+        ],
+        "output_named_range": "Daily_Requests",
+        "js_expression": "DAU*ACTIONS_PER_SESSION"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 9,
+        "step": "6. Monthly Requests",
+        "formula_text": "Daily Requests * 30",
+        "excel_formula": "=Daily_Requests*30",
+        "computed_value_at_defaults": 1800000000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Daily_Requests"
+        ],
+        "output_named_range": "Monthly_Requests",
+        "js_expression": "Daily_Requests*30"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 10,
+        "step": "7. Peak Bandwidth (MB/s)",
+        "formula_text": "Peak RPS * AVG_RESPONSE_SIZE_KB / 1024",
+        "excel_formula": "=Peak_RPS*AVG_RESPONSE_SIZE_KB/1024",
+        "computed_value_at_defaults": 325.520833333333,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "AVG_RESPONSE_SIZE_KB",
+          "Peak_RPS"
+        ],
+        "output_named_range": "Peak_Bandwidth_MBps",
+        "js_expression": "Peak_RPS*AVG_RESPONSE_SIZE_KB/1024"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 11,
+        "step": "8. Peak Bandwidth (Gbps)",
+        "formula_text": "MB/s * 8 / 1000",
+        "excel_formula": "=Peak_Bandwidth_MBps*8/1000",
+        "computed_value_at_defaults": 2.60416666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_Bandwidth_MBps"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_Bandwidth_MBps*8/1000"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 12,
+        "step": "9. Daily Egress (GB)",
+        "formula_text": "Daily Requests * AVG_RESPONSE_SIZE_KB / 1024 / 1024",
+        "excel_formula": "=Daily_Requests*AVG_RESPONSE_SIZE_KB/1024/1024",
+        "computed_value_at_defaults": 2861.02294921875,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "AVG_RESPONSE_SIZE_KB",
+          "Daily_Requests"
+        ],
+        "output_named_range": "Daily_Egress_GB",
+        "js_expression": "Daily_Requests*AVG_RESPONSE_SIZE_KB/1024/1024"
+      },
+      {
+        "sheet": "02_User_Metrics",
+        "row": 13,
+        "step": "10. Monthly Egress (TB)",
+        "formula_text": "Daily Egress GB * 30 / 1024",
+        "excel_formula": "=Daily_Egress_GB*30/1024",
+        "computed_value_at_defaults": 83.8190317153931,
+        "notes": "Feeds CDN + cost sheets",
+        "depends_on_named_ranges": [
+          "Daily_Egress_GB"
+        ],
+        "output_named_range": "Monthly_Egress_TB",
+        "js_expression": "Daily_Egress_GB*30/1024"
+      }
+    ],
+    "03_Frontend_CDN": [
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 12,
+        "step": "1. Total Static Data/day (GB)",
+        "formula_text": "DAU * Static_Asset_MB_Per_User / 1024",
+        "excel_formula": "=DAU*Static_Asset_MB_Per_User/1024",
+        "computed_value_at_defaults": 3906.25,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DAU",
+          "Static_Asset_MB_Per_User"
+        ],
+        "output_named_range": null,
+        "js_expression": "DAU*Static_Asset_MB_Per_User/1024"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 13,
+        "step": "2. Origin Traffic/day (GB)",
+        "formula_text": "Total * (1 - CDN_Cache_Hit_Ratio_Pct/100)",
+        "excel_formula": "=C12*(1-CDN_Cache_Hit_Ratio_Pct/100)",
+        "computed_value_at_defaults": 78.1250000000001,
+        "notes": "What actually reaches origin",
+        "depends_on_named_ranges": [
+          "CDN_Cache_Hit_Ratio_Pct"
+        ],
+        "output_named_range": null,
+        "js_expression": "C12*(1-CDN_Cache_Hit_Ratio_Pct/100)"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 14,
+        "step": "3. Required Edge Nodes",
+        "formula_text": "ROUNDUP(Peak RPS / Edge_Node_Capacity_RPS, 0)",
+        "excel_formula": "=ROUNDUP(Peak_RPS/Edge_Node_Capacity_RPS,0)",
+        "computed_value_at_defaults": 2,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Edge_Node_Capacity_RPS",
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Peak_RPS/Edge_Node_Capacity_RPS)"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 15,
+        "step": "4. CDN Bandwidth Peak (Gbps)",
+        "formula_text": "Peak RPS * 2MB * 8 / 1024 / 1000",
+        "excel_formula": "=Peak_RPS*Static_Asset_MB_Per_User*8/1024/1000",
+        "computed_value_at_defaults": 0.104166666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "Static_Asset_MB_Per_User"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*Static_Asset_MB_Per_User*8/1024/1000"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 16,
+        "step": "5. Effective Bandwidth after compression (Gbps)",
+        "formula_text": "Peak Gbps * (1 - Compression_Reduction_Pct/100)",
+        "excel_formula": "=C15*(1-Compression_Reduction_Pct/100)",
+        "computed_value_at_defaults": 0.03125,
+        "notes": "HTTP/3 + Brotli",
+        "depends_on_named_ranges": [
+          "Compression_Reduction_Pct"
+        ],
+        "output_named_range": null,
+        "js_expression": "C15*(1-Compression_Reduction_Pct/100)"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 17,
+        "step": "6. Service-Worker-Absorbed Requests/s",
+        "formula_text": "Peak RPS * Service_Worker_Hit_Pct/100",
+        "excel_formula": "=Peak_RPS*Service_Worker_Hit_Pct/100",
+        "computed_value_at_defaults": 2666.66666666667,
+        "notes": "Never leaves the browser",
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "Service_Worker_Hit_Pct"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*Service_Worker_Hit_Pct/100"
+      },
+      {
+        "sheet": "03_Frontend_CDN",
+        "row": 18,
+        "step": "7. Origin-Bound Dynamic RPS",
+        "formula_text": "Peak RPS * (1 - CDN_Cache_Hit_Ratio_Pct/100)",
+        "excel_formula": "=Peak_RPS*(1-CDN_Cache_Hit_Ratio_Pct/100)",
+        "computed_value_at_defaults": 133.333333333333,
+        "notes": "This is what the gateway must actually absorb",
+        "depends_on_named_ranges": [
+          "CDN_Cache_Hit_Ratio_Pct",
+          "Peak_RPS"
+        ],
+        "output_named_range": "Origin_Dynamic_RPS",
+        "js_expression": "Peak_RPS*(1-CDN_Cache_Hit_Ratio_Pct/100)"
+      }
+    ],
+    "04_API_Gateway": [
+      {
+        "sheet": "04_API_Gateway",
+        "row": 5,
+        "step": "1. Effective RPS/instance",
+        "formula_text": "Gateway_RPS_Capacity * Gateway_CPU_Util_Target/100",
+        "excel_formula": "=Gateway_RPS_Capacity*Gateway_CPU_Util_Target/100",
+        "computed_value_at_defaults": 1800,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Gateway_CPU_Util_Target",
+          "Gateway_RPS_Capacity"
+        ],
+        "output_named_range": "Gateway_Effective_RPS",
+        "js_expression": "Gateway_RPS_Capacity*Gateway_CPU_Util_Target/100"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 6,
+        "step": "2. Raw Gateway Instances",
+        "formula_text": "ROUNDUP(Peak RPS / Effective RPS, 0)",
+        "excel_formula": "=ROUNDUP(Peak_RPS/Gateway_Effective_RPS,0)",
+        "computed_value_at_defaults": 4,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Gateway_Effective_RPS",
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Peak_RPS/Gateway_Effective_RPS)"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 7,
+        "step": "3. Availability Zones",
+        "formula_text": "Fixed",
+        "excel_formula": "=3",
+        "computed_value_at_defaults": 3,
+        "notes": "Multi-AZ standard",
+        "depends_on_named_ranges": [],
+        "output_named_range": "Gateway_AZs",
+        "js_expression": "3"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 8,
+        "step": "4. Per-AZ Instances (N+1)",
+        "formula_text": "ROUNDUP(Raw / Zones, 0) + 1",
+        "excel_formula": "=ROUNDUP(C6/Gateway_AZs,0)+1",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Gateway_AZs"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(C6/Gateway_AZs)+1"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 9,
+        "step": "5. Total Gateway Instances (sized)",
+        "formula_text": "Per-AZ * Zones",
+        "excel_formula": "=C8*Gateway_AZs",
+        "computed_value_at_defaults": 9,
+        "notes": "Use this, not Gateway_Instances input, for downstream cost/capacity",
+        "depends_on_named_ranges": [
+          "Gateway_AZs"
+        ],
+        "output_named_range": "Gateway_Instances_Sized",
+        "js_expression": "C8*Gateway_AZs"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 10,
+        "step": "6. Gateway Latency Added (ms)",
+        "formula_text": "Gateway_Overhead_ms + SSL_Handshake_ms*SSL_Rate_Pct/100",
+        "excel_formula": "=Gateway_Overhead_ms+SSL_Handshake_ms*SSL_Rate_Pct/100",
+        "computed_value_at_defaults": 3.5,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Gateway_Overhead_ms",
+          "SSL_Handshake_ms",
+          "SSL_Rate_Pct"
+        ],
+        "output_named_range": "Gateway_Latency_ms",
+        "js_expression": "Gateway_Overhead_ms+SSL_Handshake_ms*SSL_Rate_Pct/100"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 11,
+        "step": "7. Gateway CPU Cores Total",
+        "formula_text": "Total Instances * Cores_Per_App_Instance",
+        "excel_formula": "=Gateway_Instances_Sized*Cores_Per_App_Instance",
+        "computed_value_at_defaults": 36,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Cores_Per_App_Instance",
+          "Gateway_Instances_Sized"
+        ],
+        "output_named_range": null,
+        "js_expression": "Gateway_Instances_Sized*Cores_Per_App_Instance"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 15,
+        "step": "8. Rate-Limit Redis Ops/s",
+        "formula_text": "Peak RPS * 2 (INCR + EXPIRE)",
+        "excel_formula": "=Peak_RPS*2",
+        "computed_value_at_defaults": 13333.3333333333,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*2"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 16,
+        "step": "9. Rate-Limit Memory (MB)",
+        "formula_text": "DAU * 200 bytes / 1024 / 1024",
+        "excel_formula": "=DAU*200/1024/1024",
+        "computed_value_at_defaults": 381.4697265625,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DAU"
+        ],
+        "output_named_range": null,
+        "js_expression": "DAU*200/1024/1024"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 17,
+        "step": "10. Estimated Reject % (DDoS signal)",
+        "formula_text": "0.5% of peak",
+        "excel_formula": "=0.5",
+        "computed_value_at_defaults": 0.5,
+        "notes": "Fixed heuristic",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "0.5"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 27,
+        "step": "11. JWT Verify Ops/s",
+        "formula_text": "Equals Peak RPS",
+        "excel_formula": "=Peak_RPS",
+        "computed_value_at_defaults": 6666.66666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 28,
+        "step": "12. JWT CPU Cost (cores)",
+        "formula_text": "Peak RPS * 0.5ms / 1000",
+        "excel_formula": "=Peak_RPS*0.5/1000",
+        "computed_value_at_defaults": 3.33333333333333,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*0.5/1000"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 29,
+        "step": "13. JWT Public Key Cache (KB)",
+        "formula_text": "Static",
+        "excel_formula": "=1",
+        "computed_value_at_defaults": 1,
+        "notes": "JWKS cached at edge",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "1"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 42,
+        "step": "18. WebSocket Concurrent (order tracking)",
+        "formula_text": "PCU * 5%",
+        "excel_formula": "=PCU*0.05",
+        "computed_value_at_defaults": 20000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "PCU"
+        ],
+        "output_named_range": null,
+        "js_expression": "PCU*0.05"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 43,
+        "step": "19. SSE Concurrent (price updates)",
+        "formula_text": "PCU * 10%",
+        "excel_formula": "=PCU*0.1",
+        "computed_value_at_defaults": 40000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "PCU"
+        ],
+        "output_named_range": null,
+        "js_expression": "PCU*0.1"
+      },
+      {
+        "sheet": "04_API_Gateway",
+        "row": 44,
+        "step": "20. WS Memory (MB)",
+        "formula_text": "Concurrent * 64KB / 1024",
+        "excel_formula": "=C42*64/1024",
+        "computed_value_at_defaults": 1250,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C42*64/1024"
+      }
+    ],
+    "05_Load_Balancer": [
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 4,
+        "step": "1. LB Type",
+        "formula_text": "NLB(L4, TLS passthrough) + ALB(L7, HTTP routing)",
+        "excel_formula": "=\"NLB (L4) + ALB (L7)\"",
+        "computed_value_at_defaults": "NLB (L4) + ALB (L7)",
+        "notes": "Two-tier: NLB absorbs TLS/SYN, ALB does path routing",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "\"NLB (L4) + ALB (L7)\""
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 5,
+        "step": "2. LB Instances",
+        "formula_text": "Active-active multi-AZ",
+        "excel_formula": "=2",
+        "computed_value_at_defaults": 2,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": "LB_Instances",
+        "js_expression": "2"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 6,
+        "step": "3. Concurrent Connections",
+        "formula_text": "Peak RPS * 2 (keep-alive ratio)",
+        "excel_formula": "=Peak_RPS*2",
+        "computed_value_at_defaults": 13333.3333333333,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*2"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 7,
+        "step": "4. TLS Handshakes/sec",
+        "formula_text": "Peak RPS * SSL_Rate_Pct/100",
+        "excel_formula": "=Peak_RPS*SSL_Rate_Pct/100",
+        "computed_value_at_defaults": 666.666666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "SSL_Rate_Pct"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*SSL_Rate_Pct/100"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 8,
+        "step": "5. LB Latency Added (ms)",
+        "formula_text": "Fixed",
+        "excel_formula": "=LB_Forward_ms",
+        "computed_value_at_defaults": 2,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "LB_Forward_ms"
+        ],
+        "output_named_range": null,
+        "js_expression": "LB_Forward_ms"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 9,
+        "step": "6. Health Check Interval (s)",
+        "formula_text": "Fixed policy",
+        "excel_formula": "=5",
+        "computed_value_at_defaults": 5,
+        "notes": "3 consecutive failures = ejected",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "5"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 10,
+        "step": "7. Sticky Session TTL (min)",
+        "formula_text": "WebSocket only",
+        "excel_formula": "=5",
+        "computed_value_at_defaults": 5,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "5"
+      },
+      {
+        "sheet": "05_Load_Balancer",
+        "row": 11,
+        "step": "8. Connection Draining (s)",
+        "formula_text": "On scale-down",
+        "excel_formula": "=30",
+        "computed_value_at_defaults": 30,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "30"
+      }
+    ],
+    "06_Backend_Services": [
+      {
+        "sheet": "06_Backend_Services",
+        "row": 13,
+        "step": "Headroom %",
+        "formula_text": "(Total RPS Cap / Peak RPS - 1) * 100",
+        "excel_formula": "=(Total_RPS_Capacity/Peak_RPS-1)*100",
+        "computed_value_at_defaults": 1017.5,
+        "notes": "WARNING if < 50%",
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "Total_RPS_Capacity"
+        ],
+        "output_named_range": null,
+        "js_expression": "(Total_RPS_Capacity/Peak_RPS-1)*100"
+      },
+      {
+        "sheet": "06_Backend_Services",
+        "row": 14,
+        "step": "Headroom Status",
+        "formula_text": "IF(Headroom<50,\"WARNING - THIN\",\"OK\")",
+        "excel_formula": "=IF(C13<50,\"WARNING - THIN\",\"OK\")",
+        "computed_value_at_defaults": "OK",
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "IF(C13<50,\"WARNING - THIN\",\"OK\")"
+      }
+    ],
+    "07_Network_Latency": [
+      {
+        "sheet": "07_Network_Latency",
+        "row": 18,
+        "step": "Uncached Path P50 (ms)",
+        "formula_text": "SUM of all hops (incl. origin miss + DB)",
+        "excel_formula": "=SUM(B4:B15)",
+        "computed_value_at_defaults": 85.5,
+        "notes": "Full round trip on a cache miss",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "SUM(B4:B15)"
+      },
+      {
+        "sheet": "07_Network_Latency",
+        "row": 19,
+        "step": "Cached Path P50 (ms)",
+        "formula_text": "Uncached minus CDN-origin-miss and DB-query hops",
+        "excel_formula": "=C18-CDN_Origin_Miss_ms-DB_Query_ms",
+        "computed_value_at_defaults": 50.5,
+        "notes": "CDN + Redis hit path",
+        "depends_on_named_ranges": [
+          "CDN_Origin_Miss_ms",
+          "DB_Query_ms"
+        ],
+        "output_named_range": null,
+        "js_expression": "C18-CDN_Origin_Miss_ms-DB_Query_ms"
+      },
+      {
+        "sheet": "07_Network_Latency",
+        "row": 20,
+        "step": "Blended P50 (ms)",
+        "formula_text": "98% cached, 2% uncached (per CDN sheet)",
+        "excel_formula": "=C19*0.98+C18*0.02",
+        "computed_value_at_defaults": 51.2,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C19*0.98+C18*0.02"
+      },
+      {
+        "sheet": "07_Network_Latency",
+        "row": 21,
+        "step": "P95 (ms)",
+        "formula_text": "Blended P50 * 1.8 (typical tail amplification)",
+        "excel_formula": "=C20*1.8",
+        "computed_value_at_defaults": 92.16,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": "P95_Latency_ms",
+        "js_expression": "C20*1.8"
+      },
+      {
+        "sheet": "07_Network_Latency",
+        "row": 22,
+        "step": "P99 (ms)",
+        "formula_text": "Blended P50 * 3.0",
+        "excel_formula": "=C20*3",
+        "computed_value_at_defaults": 153.6,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C20*3"
+      },
+      {
+        "sheet": "07_Network_Latency",
+        "row": 23,
+        "step": "SLA Compliance",
+        "formula_text": "IF(P95 < SLA_P95_ms, \"PASS\", \"FAIL\")",
+        "excel_formula": "=IF(C21<SLA_P95_ms,\"PASS\",\"FAIL\")",
+        "computed_value_at_defaults": "PASS",
+        "notes": null,
+        "depends_on_named_ranges": [
+          "SLA_P95_ms"
+        ],
+        "output_named_range": null,
+        "js_expression": "IF(C21<SLA_P95_ms,\"PASS\",\"FAIL\")"
+      }
+    ],
+    "08_Kafka_Design": [
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 5,
+        "step": "1. Kafka MB/s",
+        "formula_text": "Peak RPS * AVG_MSG_SIZE_KB / 1024",
+        "excel_formula": "=Peak_RPS*AVG_MSG_SIZE_KB/1024",
+        "computed_value_at_defaults": 6.51041666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "AVG_MSG_SIZE_KB",
+          "Peak_RPS"
+        ],
+        "output_named_range": "Kafka_MBps",
+        "js_expression": "Peak_RPS*AVG_MSG_SIZE_KB/1024"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 6,
+        "step": "2. Internal MB/s (with replication)",
+        "formula_text": "MB/s * REPLICATION_FACTOR",
+        "excel_formula": "=Kafka_MBps*REPLICATION_FACTOR",
+        "computed_value_at_defaults": 19.53125,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Kafka_MBps",
+          "REPLICATION_FACTOR"
+        ],
+        "output_named_range": "Kafka_Internal_MBps",
+        "js_expression": "Kafka_MBps*REPLICATION_FACTOR"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 7,
+        "step": "3. Daily Volume (GB)",
+        "formula_text": "MB/s * 86400 / 1024",
+        "excel_formula": "=Kafka_MBps*86400/1024",
+        "computed_value_at_defaults": 549.31640625,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Kafka_MBps"
+        ],
+        "output_named_range": null,
+        "js_expression": "Kafka_MBps*86400/1024"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 8,
+        "step": "4. Monthly Volume (TB)",
+        "formula_text": "Daily * 30 / 1024",
+        "excel_formula": "=C7*30/1024",
+        "computed_value_at_defaults": 16.0932540893555,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C7*30/1024"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 9,
+        "step": "5. With Compression (zstd, ~3x)",
+        "formula_text": "Monthly / 3",
+        "excel_formula": "=C8/3",
+        "computed_value_at_defaults": 5.36441802978516,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C8/3"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 13,
+        "step": "6. Partitions (producer-bound)",
+        "formula_text": "ROUNDUP(MB/s / PRODUCER_PER_PARTITION_MBPS, 0)",
+        "excel_formula": "=ROUNDUP(Kafka_MBps/PRODUCER_PER_PARTITION_MBPS,0)",
+        "computed_value_at_defaults": 1,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Kafka_MBps",
+          "PRODUCER_PER_PARTITION_MBPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Kafka_MBps/PRODUCER_PER_PARTITION_MBPS)"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 14,
+        "step": "7. Partitions (consumer-bound)",
+        "formula_text": "ROUNDUP(MB/s / CONSUMER_PER_PARTITION_MBPS, 0)",
+        "excel_formula": "=ROUNDUP(Kafka_MBps/CONSUMER_PER_PARTITION_MBPS,0)",
+        "computed_value_at_defaults": 2,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "CONSUMER_PER_PARTITION_MBPS",
+          "Kafka_MBps"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Kafka_MBps/CONSUMER_PER_PARTITION_MBPS)"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 15,
+        "step": "8. Raw Partitions",
+        "formula_text": "MAX(producer-bound, consumer-bound, MIN_BROKERS_HA)",
+        "excel_formula": "=MAX(C13,C14,MIN_BROKERS_HA)",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "MIN_BROKERS_HA"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.max(C13,C14,MIN_BROKERS_HA)"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 16,
+        "step": "9. Adjusted Partitions",
+        "formula_text": "ROUNDUP(Raw / BROKER_MULTIPLE, 0) * BROKER_MULTIPLE",
+        "excel_formula": "=ROUNDUP(C15/BROKER_MULTIPLE,0)*BROKER_MULTIPLE",
+        "computed_value_at_defaults": 6,
+        "notes": "Rounded to a clean multiple of brokers",
+        "depends_on_named_ranges": [
+          "BROKER_MULTIPLE"
+        ],
+        "output_named_range": "Kafka_Partitions",
+        "js_expression": "Math.ceil(C15/BROKER_MULTIPLE)*BROKER_MULTIPLE"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 17,
+        "step": "10. Brokers",
+        "formula_text": "MAX(MIN_BROKERS_HA, ROUNDUP(Internal MB/s / BROKER_CAPACITY_MBPS, 0))",
+        "excel_formula": "=MAX(MIN_BROKERS_HA,ROUNDUP(Kafka_Internal_MBps/BROKER_CAPACITY_MBPS,0))",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "BROKER_CAPACITY_MBPS",
+          "Kafka_Internal_MBps",
+          "MIN_BROKERS_HA"
+        ],
+        "output_named_range": "Kafka_Brokers",
+        "js_expression": "Math.max(MIN_BROKERS_HA,Math.ceil(Kafka_Internal_MBps/BROKER_CAPACITY_MBPS))"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 32,
+        "step": "11. KRaft Controllers",
+        "formula_text": "Fixed (odd number for quorum)",
+        "excel_formula": "=3",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "3"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 33,
+        "step": "12. Controller Cores (each)",
+        "formula_text": "Fixed",
+        "excel_formula": "=2",
+        "computed_value_at_defaults": 2,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "2"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 34,
+        "step": "13. Controller RAM GB (each)",
+        "formula_text": "Fixed",
+        "excel_formula": "=4",
+        "computed_value_at_defaults": 4,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "4"
+      },
+      {
+        "sheet": "08_Kafka_Design",
+        "row": 35,
+        "step": "14. Metadata Ops/sec",
+        "formula_text": "Partitions * 0.1",
+        "excel_formula": "=Kafka_Partitions*0.1",
+        "computed_value_at_defaults": 0.6,
+        "notes": "Approximation",
+        "depends_on_named_ranges": [
+          "Kafka_Partitions"
+        ],
+        "output_named_range": null,
+        "js_expression": "Kafka_Partitions*0.1"
+      }
+    ],
+    "09_Database_Design": [
+      {
+        "sheet": "09_Database_Design",
+        "row": 5,
+        "step": "1. Total DB QPS",
+        "formula_text": "Peak RPS * QUERIES_PER_API_CALL",
+        "excel_formula": "=Peak_RPS*QUERIES_PER_API_CALL",
+        "computed_value_at_defaults": 20000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "QUERIES_PER_API_CALL"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*QUERIES_PER_API_CALL"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 6,
+        "step": "2. Read QPS",
+        "formula_text": "Total * READ_WRITE_SPLIT_READ_PCT/100",
+        "excel_formula": "=C5*READ_WRITE_SPLIT_READ_PCT/100",
+        "computed_value_at_defaults": 16000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "READ_WRITE_SPLIT_READ_PCT"
+        ],
+        "output_named_range": null,
+        "js_expression": "C5*READ_WRITE_SPLIT_READ_PCT/100"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 7,
+        "step": "3. Write QPS",
+        "formula_text": "Total - Read QPS",
+        "excel_formula": "=C5-C6",
+        "computed_value_at_defaults": 4000,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C5-C6"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 8,
+        "step": "4. Cache-Hit Reads",
+        "formula_text": "Read QPS * CACHE_HIT_PCT/100",
+        "excel_formula": "=C6*CACHE_HIT_PCT/100",
+        "computed_value_at_defaults": 15200,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "CACHE_HIT_PCT"
+        ],
+        "output_named_range": null,
+        "js_expression": "C6*CACHE_HIT_PCT/100"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 9,
+        "step": "5. Cache-Miss Reads",
+        "formula_text": "Read QPS - Cache-Hit Reads",
+        "excel_formula": "=C6-C8",
+        "computed_value_at_defaults": 800,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C6-C8"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 10,
+        "step": "6. Actual DB QPS (post-cache)",
+        "formula_text": "Cache-Miss Reads + Write QPS",
+        "excel_formula": "=C9+C7",
+        "computed_value_at_defaults": 4800,
+        "notes": "What Postgres really sees",
+        "depends_on_named_ranges": [],
+        "output_named_range": "Actual_DB_QPS",
+        "js_expression": "C9+C7"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 14,
+        "step": "7. Total IOPS Required",
+        "formula_text": "Actual DB QPS * DB_IOPS_PER_QUERY",
+        "excel_formula": "=Actual_DB_QPS*DB_IOPS_PER_QUERY",
+        "computed_value_at_defaults": 5760,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Actual_DB_QPS",
+          "DB_IOPS_PER_QUERY"
+        ],
+        "output_named_range": null,
+        "js_expression": "Actual_DB_QPS*DB_IOPS_PER_QUERY"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 15,
+        "step": "8. Recommended IOPS (2x headroom)",
+        "formula_text": "Total * 2",
+        "excel_formula": "=C14*2",
+        "computed_value_at_defaults": 11520,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": "DB_Recommended_IOPS",
+        "js_expression": "C14*2"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 16,
+        "step": "9. NVMe SSD Baseline",
+        "formula_text": "gp3 default vs io2 Block Express ceiling",
+        "excel_formula": "=\"gp3: 16,000 | io2 BE: 256,000\"",
+        "computed_value_at_defaults": "gp3: 16,000 | io2 BE: 256,000",
+        "notes": "Reference only",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "\"gp3: 16,000 | io2 BE: 256,000\""
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 17,
+        "step": "10. Disk Size Needed (GB)",
+        "formula_text": "ROUNDUP(Recommended IOPS / DB_SSD_IOPS_PER_GB, 0)",
+        "excel_formula": "=ROUNDUP(C15/DB_SSD_IOPS_PER_GB,0)",
+        "computed_value_at_defaults": 231,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DB_SSD_IOPS_PER_GB"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(C15/DB_SSD_IOPS_PER_GB)"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 21,
+        "step": "11. Conn per App Instance",
+        "formula_text": "(Cores * DB_CONN_MULTIPLIER) + DB_CONN_OVERHEAD",
+        "excel_formula": "=(Cores_Per_App_Instance*DB_CONN_MULTIPLIER)+DB_CONN_OVERHEAD",
+        "computed_value_at_defaults": 9,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Cores_Per_App_Instance",
+          "DB_CONN_MULTIPLIER",
+          "DB_CONN_OVERHEAD"
+        ],
+        "output_named_range": null,
+        "js_expression": "(Cores_Per_App_Instance*DB_CONN_MULTIPLIER)+DB_CONN_OVERHEAD"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 22,
+        "step": "12. Total App Instances",
+        "formula_text": "Sum of backend service instances (06_Backend_Services)",
+        "excel_formula": "=Total_App_Instances",
+        "computed_value_at_defaults": 29,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Total_App_Instances"
+        ],
+        "output_named_range": null,
+        "js_expression": "Total_App_Instances"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 23,
+        "step": "13. Total DB Connections",
+        "formula_text": "Instances * Conn per Instance",
+        "excel_formula": "=Total_App_Instances*C21",
+        "computed_value_at_defaults": 261,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Total_App_Instances"
+        ],
+        "output_named_range": null,
+        "js_expression": "Total_App_Instances*C21"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 24,
+        "step": "14. max_connections (postgresql.conf)",
+        "formula_text": "ROUNDUP(Total * 1.5, 0)",
+        "excel_formula": "=ROUNDUP(C23*1.5,0)",
+        "computed_value_at_defaults": 392,
+        "notes": "PgBouncer recommended above ~500",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(C23*1.5)"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 28,
+        "step": "15. Daily Writes",
+        "formula_text": "Write QPS * 86400",
+        "excel_formula": "=C7*86400",
+        "computed_value_at_defaults": 345600000,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C7*86400"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 29,
+        "step": "16. Hot Data Rows",
+        "formula_text": "Daily Writes * DB_HOT_RETENTION_DAYS",
+        "excel_formula": "=C28*DB_HOT_RETENTION_DAYS",
+        "computed_value_at_defaults": 10368000000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DB_HOT_RETENTION_DAYS"
+        ],
+        "output_named_range": null,
+        "js_expression": "C28*DB_HOT_RETENTION_DAYS"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 30,
+        "step": "17. Hot Data Size (GB)",
+        "formula_text": "Hot Data Rows * DB_ROW_SIZE_KB / 1024 / 1024",
+        "excel_formula": "=C29*DB_ROW_SIZE_KB/1024/1024",
+        "computed_value_at_defaults": 19775.390625,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DB_ROW_SIZE_KB"
+        ],
+        "output_named_range": null,
+        "js_expression": "C29*DB_ROW_SIZE_KB/1024/1024"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 31,
+        "step": "18. With Indexes (GB)",
+        "formula_text": "Hot Data GB * 1.5",
+        "excel_formula": "=C30*1.5",
+        "computed_value_at_defaults": 29663.0859375,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C30*1.5"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 32,
+        "step": "19. With WAL (2x)",
+        "formula_text": "Total * 2",
+        "excel_formula": "=C31*2",
+        "computed_value_at_defaults": 59326.171875,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C31*2"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 33,
+        "step": "20. Backup Storage (S3, 30d)",
+        "formula_text": "Daily full backup * 30 retained copies notional",
+        "excel_formula": "=C31*1",
+        "computed_value_at_defaults": 29663.0859375,
+        "notes": "Feeds 16_Cost_Estimator S3 line",
+        "depends_on_named_ranges": [],
+        "output_named_range": "DB_Storage_GB",
+        "js_expression": "C31*1"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 37,
+        "step": "21. Recommended RAM (GB, shared_buffers 25%)",
+        "formula_text": "ROUNDUP(Hot Data GB * 0.25, 0)",
+        "excel_formula": "=ROUNDUP(C30*0.25,0)",
+        "computed_value_at_defaults": 4944,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(C30*0.25)"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 38,
+        "step": "22. Recommended vCPU",
+        "formula_text": "MAX(8, ROUNDUP(Actual QPS / 2000, 0))",
+        "excel_formula": "=MAX(8,ROUNDUP(Actual_DB_QPS/2000,0))",
+        "computed_value_at_defaults": 8,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Actual_DB_QPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.max(8,Math.ceil(Actual_DB_QPS/2000))"
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 39,
+        "step": "23. Primary Server",
+        "formula_text": "Fixed recommendation",
+        "excel_formula": "=\"1x r6i.2xlarge (8 vCPU, 64GB)\"",
+        "computed_value_at_defaults": "1x r6i.2xlarge (8 vCPU, 64GB)",
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "\"1x r6i.2xlarge (8 vCPU, 64GB)\""
+      },
+      {
+        "sheet": "09_Database_Design",
+        "row": 40,
+        "step": "24. Read Replicas",
+        "formula_text": "ROUNDUP(Read QPS / DB_READ_REPLICA_QPS, 0)",
+        "excel_formula": "=ROUNDUP(C6/DB_READ_REPLICA_QPS,0)",
+        "computed_value_at_defaults": 4,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DB_READ_REPLICA_QPS"
+        ],
+        "output_named_range": "DB_Read_Replicas",
+        "js_expression": "Math.ceil(C6/DB_READ_REPLICA_QPS)"
+      }
+    ],
+    "10_Cache_Redis": [
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 5,
+        "step": "1. Session Memory (GB)",
+        "formula_text": "DAU * SESSION_SIZE_KB / 1024 / 1024",
+        "excel_formula": "=DAU*SESSION_SIZE_KB/1024/1024",
+        "computed_value_at_defaults": 2.86102294921875,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DAU",
+          "SESSION_SIZE_KB"
+        ],
+        "output_named_range": null,
+        "js_expression": "DAU*SESSION_SIZE_KB/1024/1024"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 6,
+        "step": "2. Catalog Memory (GB)",
+        "formula_text": "CATALOG_SKUS * CATALOG_ENTRY_KB / 1024 / 1024",
+        "excel_formula": "=CATALOG_SKUS*CATALOG_ENTRY_KB/1024/1024",
+        "computed_value_at_defaults": 1.43051147460938,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "CATALOG_ENTRY_KB",
+          "CATALOG_SKUS"
+        ],
+        "output_named_range": null,
+        "js_expression": "CATALOG_SKUS*CATALOG_ENTRY_KB/1024/1024"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 7,
+        "step": "3. Hot SKU Memory (GB)",
+        "formula_text": "HOT_SKU_COUNT * HOT_SKU_ENTRY_KB / 1024 / 1024",
+        "excel_formula": "=HOT_SKU_COUNT*HOT_SKU_ENTRY_KB/1024/1024",
+        "computed_value_at_defaults": 0.095367431640625,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "HOT_SKU_COUNT",
+          "HOT_SKU_ENTRY_KB"
+        ],
+        "output_named_range": null,
+        "js_expression": "HOT_SKU_COUNT*HOT_SKU_ENTRY_KB/1024/1024"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 8,
+        "step": "4. Subtotal (GB)",
+        "formula_text": "1 + 2 + 3",
+        "excel_formula": "=C5+C6+C7",
+        "computed_value_at_defaults": 4.38690185546875,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C5+C6+C7"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 9,
+        "step": "5. With Overhead (GB)",
+        "formula_text": "Subtotal * CACHE_OVERHEAD_FACTOR",
+        "excel_formula": "=C8*CACHE_OVERHEAD_FACTOR",
+        "computed_value_at_defaults": 5.70297241210938,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "CACHE_OVERHEAD_FACTOR"
+        ],
+        "output_named_range": null,
+        "js_expression": "C8*CACHE_OVERHEAD_FACTOR"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 10,
+        "step": "6. Per Shard (GB)",
+        "formula_text": "ROUNDUP((Total / REDIS_SHARDS) * REDIS_HEADROOM, 0)",
+        "excel_formula": "=ROUNDUP((C9/REDIS_SHARDS)*REDIS_HEADROOM,0)",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "REDIS_HEADROOM",
+          "REDIS_SHARDS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil((C9/REDIS_SHARDS)*REDIS_HEADROOM)"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 11,
+        "step": "7. Total Cluster (GB)",
+        "formula_text": "Per Shard * Shards",
+        "excel_formula": "=C10*REDIS_SHARDS",
+        "computed_value_at_defaults": 9,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "REDIS_SHARDS"
+        ],
+        "output_named_range": "Redis_Cluster_GB",
+        "js_expression": "C10*REDIS_SHARDS"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 15,
+        "step": "8. Cache Ops/s",
+        "formula_text": "Peak RPS * QUERIES_PER_API_CALL",
+        "excel_formula": "=Peak_RPS*QUERIES_PER_API_CALL",
+        "computed_value_at_defaults": 20000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "QUERIES_PER_API_CALL"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*QUERIES_PER_API_CALL"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 16,
+        "step": "9. Cache Hit Ops",
+        "formula_text": "Ops * CACHE_HIT_PCT/100",
+        "excel_formula": "=C15*CACHE_HIT_PCT/100",
+        "computed_value_at_defaults": 19000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "CACHE_HIT_PCT"
+        ],
+        "output_named_range": null,
+        "js_expression": "C15*CACHE_HIT_PCT/100"
+      },
+      {
+        "sheet": "10_Cache_Redis",
+        "row": 17,
+        "step": "10. Required Nodes",
+        "formula_text": "MAX(3, ROUNDUP(Ops / REDIS_OPS_PER_NODE, 0))",
+        "excel_formula": "=MAX(3,ROUNDUP(C15/REDIS_OPS_PER_NODE,0))",
+        "computed_value_at_defaults": 3,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "REDIS_OPS_PER_NODE"
+        ],
+        "output_named_range": "Redis_Nodes",
+        "js_expression": "Math.max(3,Math.ceil(C15/REDIS_OPS_PER_NODE))"
+      }
+    ],
+    "11_DLQ_Error_Handling": [
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 5,
+        "step": "1. Retry Tier 1 delay (s)",
+        "formula_text": "Retry_Backoff_Base_sec",
+        "excel_formula": "=Retry_Backoff_Base_sec",
+        "computed_value_at_defaults": 5,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Retry_Backoff_Base_sec"
+        ],
+        "output_named_range": null,
+        "js_expression": "Retry_Backoff_Base_sec"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 6,
+        "step": "2. Retry Tier 2 delay (s)",
+        "formula_text": "Base * Multiplier",
+        "excel_formula": "=Retry_Backoff_Base_sec*Retry_Backoff_Multiplier",
+        "computed_value_at_defaults": 10,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Retry_Backoff_Base_sec",
+          "Retry_Backoff_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Retry_Backoff_Base_sec*Retry_Backoff_Multiplier"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 7,
+        "step": "3. Retry Tier 3 delay (s)",
+        "formula_text": "Base * Multiplier^2",
+        "excel_formula": "=Retry_Backoff_Base_sec*Retry_Backoff_Multiplier^2",
+        "computed_value_at_defaults": 20,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Retry_Backoff_Base_sec",
+          "Retry_Backoff_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Retry_Backoff_Base_sec*Retry_Backoff_Multiplier**2"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 8,
+        "step": "4. Retry Tier 4 delay (s)",
+        "formula_text": "Base * Multiplier^3",
+        "excel_formula": "=Retry_Backoff_Base_sec*Retry_Backoff_Multiplier^3",
+        "computed_value_at_defaults": 40,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Retry_Backoff_Base_sec",
+          "Retry_Backoff_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Retry_Backoff_Base_sec*Retry_Backoff_Multiplier**3"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 9,
+        "step": "5. Total Retry Time (s)",
+        "formula_text": "SUM of tiers 1-4",
+        "excel_formula": "=C5+C6+C7+C8",
+        "computed_value_at_defaults": 75,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C5+C6+C7+C8"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 10,
+        "step": "6. Failure Rate Reaching DLQ (%)",
+        "formula_text": "1 - (0.99^Max_Retries) * 100  [99% per-attempt success]",
+        "excel_formula": "=(1-0.99^Max_Retries)*100",
+        "computed_value_at_defaults": 2.9701,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Max_Retries"
+        ],
+        "output_named_range": null,
+        "js_expression": "(1-0.99**Max_Retries)*100"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 11,
+        "step": "7. DLQ Messages/day",
+        "formula_text": "Daily Messages(=Daily_Requests) * Failure_Rate%",
+        "excel_formula": "=Daily_Requests*C10/100",
+        "computed_value_at_defaults": 1782060,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Daily_Requests"
+        ],
+        "output_named_range": "DLQ_Msgs_Per_Day",
+        "js_expression": "Daily_Requests*C10/100"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 33,
+        "step": "8. Reprocess Batch Size",
+        "formula_text": "=Reprocess_Batch_Size",
+        "excel_formula": "=Reprocess_Batch_Size",
+        "computed_value_at_defaults": 1000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Reprocess_Batch_Size"
+        ],
+        "output_named_range": null,
+        "js_expression": "Reprocess_Batch_Size"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 34,
+        "step": "9. Reprocess Workers",
+        "formula_text": "Fixed",
+        "excel_formula": "=4",
+        "computed_value_at_defaults": 4,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "4"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 35,
+        "step": "10. Reprocess Throughput (msgs/min)",
+        "formula_text": "Batch * Workers / Interval",
+        "excel_formula": "=Reprocess_Batch_Size*C34/Reprocess_Interval_min",
+        "computed_value_at_defaults": 266.666666666667,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Reprocess_Batch_Size",
+          "Reprocess_Interval_min"
+        ],
+        "output_named_range": null,
+        "js_expression": "Reprocess_Batch_Size*C34/Reprocess_Interval_min"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 36,
+        "step": "11. Full DLQ Drain Time (hours)",
+        "formula_text": "DLQ Messages/day / Throughput / 60",
+        "excel_formula": "=DLQ_Msgs_Per_Day/C35/60",
+        "computed_value_at_defaults": 111.37875,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "DLQ_Msgs_Per_Day"
+        ],
+        "output_named_range": null,
+        "js_expression": "DLQ_Msgs_Per_Day/C35/60"
+      },
+      {
+        "sheet": "11_DLQ_Error_Handling",
+        "row": 37,
+        "step": "12. Manual Approval Threshold",
+        "formula_text": ">100 msgs requires on-call sign-off",
+        "excel_formula": "=100",
+        "computed_value_at_defaults": 100,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "100"
+      }
+    ],
+    "12_Traffic_Spikes_DDoS": [
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 14,
+        "step": "1. Target Instance Count",
+        "formula_text": "ROUNDUP(Spike RPS / RPS_Per_App_Instance, 0)",
+        "excel_formula": "=ROUNDUP(Peak_RPS*Spike_Multiplier/RPS_Per_App_Instance,0)",
+        "computed_value_at_defaults": 4,
+        "notes": "Uses live Spike_Multiplier from scenario",
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "RPS_Per_App_Instance",
+          "Spike_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Peak_RPS*Spike_Multiplier/RPS_Per_App_Instance)"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 15,
+        "step": "2. Scale-Up Time (s)",
+        "formula_text": "Cooldown + Provision(90) + Warmup(30)",
+        "excel_formula": "=Auto_Scale_Cooldown_sec+90+30",
+        "computed_value_at_defaults": 180,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Auto_Scale_Cooldown_sec"
+        ],
+        "output_named_range": null,
+        "js_expression": "Auto_Scale_Cooldown_sec+90+30"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 16,
+        "step": "3. Requests During Scale-Up",
+        "formula_text": "Spike RPS * Scale-Up Time",
+        "excel_formula": "=Peak_RPS*Spike_Multiplier*C15",
+        "computed_value_at_defaults": 1200000,
+        "notes": "Must be absorbed by pre-scaled buffer",
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "Spike_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*Spike_Multiplier*C15"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 17,
+        "step": "4. Required Pre-Scale Instances",
+        "formula_text": "ROUNDUP(Spike RPS / RPS_Per_App_Instance, 0)",
+        "excel_formula": "=ROUNDUP(Peak_RPS*Spike_Multiplier/RPS_Per_App_Instance,0)",
+        "computed_value_at_defaults": 4,
+        "notes": "Provision ahead of known events (Black Friday, flash sales)",
+        "depends_on_named_ranges": [
+          "Peak_RPS",
+          "RPS_Per_App_Instance",
+          "Spike_Multiplier"
+        ],
+        "output_named_range": null,
+        "js_expression": "Math.ceil(Peak_RPS*Spike_Multiplier/RPS_Per_App_Instance)"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 18,
+        "step": "5. HPA min pods",
+        "formula_text": "Fixed policy",
+        "excel_formula": "=6",
+        "computed_value_at_defaults": 6,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "6"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 19,
+        "step": "6. HPA max pods",
+        "formula_text": "Fixed policy",
+        "excel_formula": "=60",
+        "computed_value_at_defaults": 60,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "60"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 20,
+        "step": "7. HPA target CPU %",
+        "formula_text": "=Auto_Scale_Trigger_CPU",
+        "excel_formula": "=Auto_Scale_Trigger_CPU",
+        "computed_value_at_defaults": 70,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Auto_Scale_Trigger_CPU"
+        ],
+        "output_named_range": null,
+        "js_expression": "Auto_Scale_Trigger_CPU"
+      },
+      {
+        "sheet": "12_Traffic_Spikes_DDoS",
+        "row": 24,
+        "step": "8. Shed Threshold RPS",
+        "formula_text": "Total_RPS_Capacity * Load_Shed_Threshold_Pct/100",
+        "excel_formula": "=Total_RPS_Capacity*Load_Shed_Threshold_Pct/100",
+        "computed_value_at_defaults": 67050,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Load_Shed_Threshold_Pct",
+          "Total_RPS_Capacity"
+        ],
+        "output_named_range": null,
+        "js_expression": "Total_RPS_Capacity*Load_Shed_Threshold_Pct/100"
+      }
+    ],
+    "13_Observability": [
+      {
+        "sheet": "13_Observability",
+        "row": 4,
+        "step": "1. Metrics Data Points/day",
+        "formula_text": "Peak RPS * 100 metrics/req * 86400",
+        "excel_formula": "=Peak_RPS*100*86400",
+        "computed_value_at_defaults": 57600000000,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Peak_RPS"
+        ],
+        "output_named_range": null,
+        "js_expression": "Peak_RPS*100*86400"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 5,
+        "step": "2. Metrics Storage (GB)",
+        "formula_text": "Points * 8 bytes / 1024^3",
+        "excel_formula": "=C4*8/1024^3",
+        "computed_value_at_defaults": 429.153442382813,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C4*8/1024**3"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 6,
+        "step": "3. Logs (GB/day)",
+        "formula_text": "Daily Requests * Log_Size_Per_Request_KB / 1024 / 1024",
+        "excel_formula": "=Daily_Requests*Log_Size_Per_Request_KB/1024/1024",
+        "computed_value_at_defaults": 114.44091796875,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Daily_Requests",
+          "Log_Size_Per_Request_KB"
+        ],
+        "output_named_range": null,
+        "js_expression": "Daily_Requests*Log_Size_Per_Request_KB/1024/1024"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 7,
+        "step": "4. Logs Storage (GB, 30d retention)",
+        "formula_text": "Logs/day * Log_Retention_Days",
+        "excel_formula": "=C6*Log_Retention_Days",
+        "computed_value_at_defaults": 3433.2275390625,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Log_Retention_Days"
+        ],
+        "output_named_range": null,
+        "js_expression": "C6*Log_Retention_Days"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 8,
+        "step": "5. Traces (GB/day)",
+        "formula_text": "Daily Requests * Trace_Sample_Rate_Pct/100 * 5KB / 1024 / 1024",
+        "excel_formula": "=Daily_Requests*Trace_Sample_Rate_Pct/100*5/1024/1024",
+        "computed_value_at_defaults": 2.86102294921875,
+        "notes": null,
+        "depends_on_named_ranges": [
+          "Daily_Requests",
+          "Trace_Sample_Rate_Pct"
+        ],
+        "output_named_range": null,
+        "js_expression": "Daily_Requests*Trace_Sample_Rate_Pct/100*5/1024/1024"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 9,
+        "step": "6. Trace Storage (GB, 7d retention)",
+        "formula_text": "Traces/day * 7",
+        "excel_formula": "=C8*7",
+        "computed_value_at_defaults": 20.0271606445313,
+        "notes": null,
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "C8*7"
+      },
+      {
+        "sheet": "13_Observability",
+        "row": 10,
+        "step": "7. Cardinality Alert",
+        "formula_text": "IF(unique_labels > 100k, \"DANGER\", \"OK\") -- manual check",
+        "excel_formula": "=\"Check label cardinality manually per service\"",
+        "computed_value_at_defaults": "Check label cardinality manually per service",
+        "notes": "High-cardinality labels (user_id, order_id) blow up Prometheus",
+        "depends_on_named_ranges": [],
+        "output_named_range": null,
+        "js_expression": "\"Check label cardinality manually per service\""
+      }
+    ],
+    "16_Cost_Estimator": [
+      {
+        "sheet": "16_Cost_Estimator",
+        "row": 22,
+        "step": "Cost per 1,000 DAU / month",
+        "formula_text": "Total Monthly / (DAU/1000)",
+        "excel_formula": "=Total_Monthly_Cost/(DAU/1000)",
+        "computed_value_at_defaults": 8.46122961990356,
+        "notes": "Efficiency metric interviewers love",
+        "depends_on_named_ranges": [
+          "DAU",
+          "Total_Monthly_Cost"
+        ],
+        "output_named_range": null,
+        "js_expression": "Total_Monthly_Cost/(DAU/1000)"
+      }
+    ]
+  }
+}

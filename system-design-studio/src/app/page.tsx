@@ -1,479 +1,579 @@
 'use client';
-import { useStore } from '../lib/store';
 
-export default function ControlPanel() {
-  const { inputs, scenario, setScenario, updateInput, resetToDefault } = useStore();
+import { useState } from 'react';
+import Link from 'next/link';
+import {
+  Sparkles,
+  ArrowRight,
+  Calculator,
+  ShieldCheck,
+  Zap,
+  TrendingUp,
+  Cpu,
+  Database,
+  Radio,
+  Layers,
+  AlertTriangle,
+  Flame,
+  Activity,
+  DollarSign,
+  CheckCircle2,
+  HelpCircle,
+  Clock,
+  BookOpen,
+  Sliders,
+  Network,
+  Users,
+  Check,
+  ChevronDown,
+  Globe,
+  ChevronUp,
+} from 'lucide-react';
+import clsx from 'clsx';
+
+export default function LandingPage() {
+  // Live teaser interactive state
+  const [teaserMau, setTeaserMau] = useState<number>(10000000);
+  const [teaserDauPct, setTeaserDauPct] = useState<number>(20);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  // Quick live math for the teaser card
+  const derivedDau = Math.round(teaserMau * (teaserDauPct / 100));
+  const derivedPcu = Math.round(derivedDau * 0.2);
+  const derivedPeakRps = Math.round(((derivedPcu * 30) / 3600) * 2);
+  const derivedKafkaBrokers = Math.max(3, Math.ceil((derivedPeakRps * 0.5) / 100));
+  const derivedDbStorageGb = Math.round((derivedDau * 30 * 2.5) / 10000);
+  const derivedMonthlyCost = Math.round((derivedDau / 1000) * 8.46);
+
+  const features = [
+    {
+      icon: Calculator,
+      title: 'Back-of-the-Envelope Math Engine',
+      desc: 'Automatic derivation from MAU down to Peak API RPS, Kafka ingress throughput, database replicas, and Redis cache sizing with step-by-step arithmetic proofs.',
+      color: 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20',
+    },
+    {
+      icon: HelpCircle,
+      title: '8-Step Probing Question Framework',
+      desc: 'Never make blind assumptions. Learn the exact clarifying questions to ask interviewers regarding ingestion paradigms, DAU/MAU ratios, payload sizes, and SLA budgets.',
+      color: 'text-purple-400 bg-purple-500/10 border-purple-500/20',
+    },
+    {
+      icon: ShieldCheck,
+      title: '16-Layer Architectural Rubric',
+      desc: 'A comprehensive grading rubric across Ingress, Compute, Storage, and Resiliency tiers. Includes open-source library tradeoffs (e.g. Envoy vs Kong, Kafka vs RabbitMQ).',
+      color: 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20',
+    },
+    {
+      icon: Flame,
+      title: 'Dynamic Surge & Stress Testing',
+      desc: 'Instantly simulate Flash Sales (5x), Black Friday surges (10x), and volumetric DDoS attacks (20x) to evaluate cluster headroom and load-shedding survival.',
+      color: 'text-rose-400 bg-rose-500/10 border-rose-500/20',
+    },
+    {
+      icon: Clock,
+      title: 'Hop-by-Hop Latency Waterfall',
+      desc: 'Pinpoint bottlenecks with a full P50/P95/P99 latency decomposition across DNS, Anycast CDN, API Gateway, microservices, and database query executions.',
+      color: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+    },
+    {
+      icon: DollarSign,
+      title: 'AWS Line-Item Cost Estimator',
+      desc: 'Calculate precise monthly and annual infrastructure expenditure across EC2, RDS, ElastiCache, S3, and egress transit with unit economics ($/1k DAU).',
+      color: 'text-blue-400 bg-blue-500/10 border-blue-500/20',
+    },
+  ];
+
+  const scenarios = [
+    {
+      num: '01',
+      title: 'E-Commerce Flash Sale Checkout',
+      tag: 'Idempotency & Sagas',
+      summary: 'Scale 10M DAU checkout with transactional outbox, Kafka event bus, and distributed inventory reservations.',
+    },
+    {
+      num: '02',
+      title: 'Real-Time Driver GPS Tracking',
+      tag: 'WebSockets & Fan-out',
+      summary: 'Size concurrent open socket connections, kernel memory buffers (64KB/conn), and Redis Pub/Sub broadcast tiers.',
+    },
+    {
+      num: '03',
+      title: 'Black Friday 10x Surge Survival',
+      tag: '5-Tier Load Shedding',
+      summary: 'Pre-scale Kubernetes HPA, absorb 85%+ static traffic at Anycast CDN edge, and drop non-critical background jobs.',
+    },
+    {
+      num: '04',
+      title: 'Payment Idempotency & Zero Double-Charge',
+      tag: 'Distributed Locks',
+      summary: 'Prevent duplicate credit card transactions during mobile network timeouts using Redis lock keys and transactional DB deduplication.',
+    },
+    {
+      num: '05',
+      title: 'Kafka Consumer Lag Spike Diagnostics',
+      tag: 'Streaming Health',
+      summary: 'Troubleshoot consumer rebalance storms, unindexed DB locks, and configure CooperativeStickyAssignors for zero downtime.',
+    },
+    {
+      num: '06',
+      title: 'Dead-Letter Queue (DLQ) Recovery',
+      tag: 'Poison Pill Defense',
+      summary: 'Architect 4-tier exponential backoff retry topics (5s → 30s → 5m → DLQ) with shadow canary replay tooling.',
+    },
+  ];
+
+  const faqs = [
+    {
+      q: 'What is the story behind this tool? Why build and share it for free?',
+      a: 'Having personally been impacted by tech industry layoffs, I experienced firsthand how stressful and unstructured system design preparation can be without guidance. While algorithm coding has clear answers, candidates frequently struggle with back-of-the-envelope estimations under interview pressure. I needed a hands-on way to calculate scale, practice the math repeatedly, and articulate architectural decisions with confidence. I built this comprehensive engine and decided to share it 100% free so that any engineer facing layoffs or preparing for high-stakes interviews can master the math and succeed without expensive $300 course paywalls.',
+    },
+    {
+      q: 'Can I contribute or add new architecture sheets to this product?',
+      a: 'Yes, absolutely! System Design Studio is completely open-source under a free permissive license. You are welcome to fork the GitHub repository, add new distributed system patterns, expand formula calculators, or submit improvements via Pull Requests (PRs). We welcome community contributions to help engineers worldwide.',
+    },
+    {
+      q: 'Is this really 100% free with no sign-up or credit card?',
+      a: 'Yes, completely free. There are no paywalls, no email gates, no credit cards, and no logins. You can open the studio, adjust numbers, test scenarios, and review rubrics instantly.',
+    },
+    {
+      q: 'How are the calculations and formulas derived?',
+      a: 'All sizing rules, latency hops, and capacity ratios are grounded in proven distributed systems engineering practices used across FAANG and tier-1 tech companies (Google SRE, Meta TAO/Memcached, AWS Well-Architected, Netflix Chaos Engineering).',
+    },
+    {
+      q: 'Can I use this during real mock interview practice?',
+      a: 'Absolutely. Use the 60-Minute Mock Timer, practice asking the 8 probing questions first, and memorize the auto-interpolated 60-Second Whiteboard Talk-Track from the Summary Cheatsheet.',
+    },
+    {
+      q: 'Does it work on mobile phones and tablets?',
+      a: 'Yes, the entire product is fully mobile responsive across portrait and landscape orientations, with native filter dropdowns and touch-friendly controls.',
+    },
+  ];
 
   return (
-    <div className="max-w-4xl mx-auto pb-10">
-      <div className="flex justify-between items-end mb-6 pb-2 border-b-2 border-gray-300">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 mb-1 font-serif tracking-tight">Master Control Panel</h1>
-          <p className="text-xs text-gray-600 font-sans">Configure base inputs. Changes propagate instantly to all derivations.</p>
+    <div className="space-y-24 pb-28 font-sans">
+      {/* HERO SECTION */}
+      <section className="relative pt-12 sm:pt-20 pb-8 px-4 sm:px-6 max-w-6xl mx-auto text-center space-y-8">
+        {/* Glow backdrop */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[300px] sm:h-[400px] bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+        {/* Eyebrow Pill */}
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/40 text-indigo-300 text-xs font-mono font-medium shadow-sm">
+          <Sparkles size={14} className="text-indigo-400 shrink-0" />
+          <span>100% Free • No Sign-Up • No Credit Card Required</span>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <div className="flex flex-col">
-            <label className="text-[10px] uppercase text-gray-500 font-semibold mb-0.5 tracking-wider">Scenario Override</label>
-            <select 
-              value={scenario}
-              onChange={(e) => setScenario(e.target.value as any)}
-              className="bg-white border border-[#ccc] rounded px-2 py-1 text-xs text-gray-800 focus:outline-none focus:border-gray-500 shadow-sm font-sans"
-            >
-              <option value="Normal">Normal</option>
-              <option value="Flash Sale">Flash Sale</option>
-              <option value="Black Friday">Black Friday</option>
-              <option value="Cyber Monday">Cyber Monday</option>
-              <option value="DDoS">DDoS</option>
-            </select>
-          </div>
-          
-          <button 
-            onClick={resetToDefault}
-            className="mt-4 bg-[#e0e0e0] border border-[#bbb] hover:bg-[#d0d0d0] px-3 py-1 rounded text-xs text-gray-800 transition-colors shadow-sm font-medium"
+
+        {/* Main Headline */}
+        <div className="space-y-4 max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
+            Stop Guessing.{' '}
+            <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
+              Master Back-of-the-Envelope Math
+            </span>{' '}
+            for System Design Interviews.
+          </h1>
+          <p className="text-sm sm:text-base md:text-lg text-zinc-300 max-w-3xl mx-auto leading-relaxed">
+            In today&apos;s hyper-competitive tech market with high-volume layoffs, engineers spend months grinding coding algorithms—only to fail system design rounds because they skip basic capacity estimation and jump blindly into drawing boxes.
+          </p>
+        </div>
+
+        {/* CTA Buttons */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
+          <Link
+            href="/studio"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all cursor-pointer group"
           >
-            Reset Defaults
-          </button>
+            <span>Launch Free Interactive Studio</span>
+            <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          <Link
+            href="/concepts"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-indigo-500/40 bg-indigo-950/30 hover:bg-indigo-950/50 text-indigo-200 font-semibold text-sm sm:text-base transition-all"
+          >
+            <Sparkles size={16} className="text-indigo-400" />
+            <span>30 Concepts Math Primer</span>
+          </Link>
+
+          <Link
+            href="/rubric"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-white/[0.1] bg-[#0e1017] hover:bg-white/[0.05] text-zinc-200 font-semibold text-sm sm:text-base transition-all"
+          >
+            <ShieldCheck size={16} className="text-emerald-400" />
+            <span>16-Layer Rubric</span>
+          </Link>
         </div>
-      </div>
 
-      <div className="space-y-4 font-sans">
-        {/* Block A is customized */}
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="flex justify-between items-center border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide font-sans">Block A - User Metrics</h2>
-            <span className="text-[10px] text-gray-500 italic">Adjusts the top of the funnel</span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5 col-span-2 sm:col-span-1">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">MAU</label>
-              <input type="number" value={inputs.MAU} onChange={(e) => updateInput('MAU', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">DAU %</label>
-              <input type="number" value={inputs.DAU_PCT} disabled={scenario !== 'Normal'} onChange={(e) => updateInput('DAU_PCT', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner disabled:bg-[#f0f0f0]" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">Peak Concurrent %</label>
-              <input type="number" value={inputs.PEAK_CONCURRENT_PCT} disabled={scenario !== 'Normal'} onChange={(e) => updateInput('PEAK_CONCURRENT_PCT', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner disabled:bg-[#f0f0f0]" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">Actions/Session</label>
-              <input type="number" value={inputs.ACTIONS_PER_SESSION} onChange={(e) => updateInput('ACTIONS_PER_SESSION', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">Peak Duration (s)</label>
-              <input type="number" value={inputs.PEAK_DURATION_SEC} onChange={(e) => updateInput('PEAK_DURATION_SEC', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">Safety Buffer</label>
-              <input type="number" value={inputs.SAFETY_BUFFER} onChange={(e) => updateInput('SAFETY_BUFFER', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none shadow-inner" />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[11px] font-semibold text-gray-700 font-sans tracking-tight">Spike Multiplier</label>
-              <input type="number" value={inputs.Spike_Multiplier} disabled className="bg-[#f0f0f0] border border-[#d4d4d4] rounded px-2 py-1 text-[13px] text-gray-500 cursor-not-allowed shadow-inner" />
-            </div>
-          </div>
-        </section>
+        {/* Feature Highlights Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 pt-4 text-xs font-mono text-zinc-400">
+          <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            ✓ Real-Time Capacity Sizing
+          </span>
+          <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            ✓ 30 Concepts Math Proofs
+          </span>
+          <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            ✓ 8 Probing Questions
+          </span>
+          <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            ✓ 16 Swim Lane Checklists
+          </span>
+          <span className="px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06]">
+            ✓ 10 Master FAANG Scenarios
+          </span>
+        </div>
+      </section>
 
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block B - Traffic Shape</h2>
+      {/* PROBLEM STATEMENT: THE COST OF SKIPPING THE MATH */}
+      <section id="problem" className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="rounded-2xl border border-rose-500/20 bg-gradient-to-br from-[#120b12] via-[#0e1017] to-[#0d0e15] p-6 sm:p-10 shadow-2xl space-y-6">
+          <div className="flex items-center gap-2 text-rose-400 font-mono text-xs uppercase tracking-wider font-semibold">
+            <AlertTriangle size={15} />
+            <span>The #1 Reason Senior Candidates Get Downleveled</span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="READ_WRITE_SPLIT_READ_PCT">READ_WRITE_SPLIT_READ_PCT</label>
-              <input type="number" step="any" value={inputs.READ_WRITE_SPLIT_READ_PCT} onChange={(e) => updateInput('READ_WRITE_SPLIT_READ_PCT', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+            <div className="space-y-2">
+              <span className="font-mono text-xl font-bold text-rose-300">01.</span>
+              <h3 className="text-base font-bold text-white">The LeetCode Trap</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Candidates practice hundreds of dynamic programming puzzles, but freeze when an interviewer asks: <em>&ldquo;How many Kafka partitions and database read replicas do we need for 10M DAU?&rdquo;</em>
+              </p>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CACHE_HIT_PCT">CACHE_HIT_PCT</label>
-              <input type="number" step="any" value={inputs.CACHE_HIT_PCT} onChange={(e) => updateInput('CACHE_HIT_PCT', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="space-y-2">
+              <span className="font-mono text-xl font-bold text-amber-300">02.</span>
+              <h3 className="text-base font-bold text-white">Blind Component Insertion</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Saying <em>&ldquo;We will put Redis here&rdquo;</em> without calculating cache working set memory, hot SKU retention hours, or eviction policies signals junior-level hand-waving.
+              </p>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="QUERIES_PER_API_CALL">QUERIES_PER_API_CALL</label>
-              <input type="number" step="any" value={inputs.QUERIES_PER_API_CALL} onChange={(e) => updateInput('QUERIES_PER_API_CALL', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="AVG_RESPONSE_SIZE_KB">AVG_RESPONSE_SIZE_KB</label>
-              <input type="number" step="any" value={inputs.AVG_RESPONSE_SIZE_KB} onChange={(e) => updateInput('AVG_RESPONSE_SIZE_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="AVG_REQUEST_SIZE_KB">AVG_REQUEST_SIZE_KB</label>
-              <input type="number" step="any" value={inputs.AVG_REQUEST_SIZE_KB} onChange={(e) => updateInput('AVG_REQUEST_SIZE_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block C - Kafka / Messaging</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="AVG_MSG_SIZE_KB">AVG_MSG_SIZE_KB</label>
-              <input type="number" step="any" value={inputs.AVG_MSG_SIZE_KB} onChange={(e) => updateInput('AVG_MSG_SIZE_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="REPLICATION_FACTOR">REPLICATION_FACTOR</label>
-              <input type="number" step="any" value={inputs.REPLICATION_FACTOR} onChange={(e) => updateInput('REPLICATION_FACTOR', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="PRODUCER_PER_PARTITION_MBPS">PRODUCER_PER_PARTITION_MBPS</label>
-              <input type="number" step="any" value={inputs.PRODUCER_PER_PARTITION_MBPS} onChange={(e) => updateInput('PRODUCER_PER_PARTITION_MBPS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CONSUMER_PER_PARTITION_MBPS">CONSUMER_PER_PARTITION_MBPS</label>
-              <input type="number" step="any" value={inputs.CONSUMER_PER_PARTITION_MBPS} onChange={(e) => updateInput('CONSUMER_PER_PARTITION_MBPS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="BROKER_CAPACITY_MBPS">BROKER_CAPACITY_MBPS</label>
-              <input type="number" step="any" value={inputs.BROKER_CAPACITY_MBPS} onChange={(e) => updateInput('BROKER_CAPACITY_MBPS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="MIN_BROKERS_HA">MIN_BROKERS_HA</label>
-              <input type="number" step="any" value={inputs.MIN_BROKERS_HA} onChange={(e) => updateInput('MIN_BROKERS_HA', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="BROKER_MULTIPLE">BROKER_MULTIPLE</label>
-              <input type="number" step="any" value={inputs.BROKER_MULTIPLE} onChange={(e) => updateInput('BROKER_MULTIPLE', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="TOPIC_RETENTION_DAYS">TOPIC_RETENTION_DAYS</label>
-              <input type="number" step="any" value={inputs.TOPIC_RETENTION_DAYS} onChange={(e) => updateInput('TOPIC_RETENTION_DAYS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="space-y-2">
+              <span className="font-mono text-xl font-bold text-indigo-300">03.</span>
+              <h3 className="text-base font-bold text-white">Skipping Probing Questions</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">
+                Jumping straight into drawing boxes without clarifying active user ratios, read/write splits, payload sizes, and latency SLAs leads to catastrophic architectural redesigns mid-interview.
+              </p>
             </div>
           </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block D - Database</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_ROW_SIZE_KB">DB_ROW_SIZE_KB</label>
-              <input type="number" step="any" value={inputs.DB_ROW_SIZE_KB} onChange={(e) => updateInput('DB_ROW_SIZE_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+        </div>
+      </section>
+
+      {/* INTERACTIVE LIVE MATH ENGINE TEASER */}
+      <section id="calculator" className="max-w-6xl mx-auto px-4 sm:px-6 space-y-6">
+        <div className="text-center space-y-2">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-400 font-semibold px-2.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+            Interactive Preview
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            See Back-of-the-Envelope Math in Action
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl mx-auto">
+            Drag the slider or adjust user volume below to watch the entire distributed system size dynamically in real-time.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-indigo-500/30 bg-[#0c0d14] p-5 sm:p-8 shadow-2xl space-y-6">
+          {/* Top Controls */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-6 border-b border-white/[0.08]">
+            <div className="rounded-xl border border-white/[0.08] bg-[#090a0f] p-4 space-y-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-300 font-medium">Monthly Active Users (MAU)</span>
+                <span className="font-mono text-indigo-300 font-bold">{(teaserMau / 1000000).toFixed(0)} Million MAU</span>
+              </div>
+              <input
+                type="range"
+                min={1000000}
+                max={100000000}
+                step={1000000}
+                value={teaserMau}
+                onChange={(e) => setTeaserMau(Number(e.target.value))}
+                className="w-full accent-indigo-500 cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                <span>1M MAU</span>
+                <span>50M MAU</span>
+                <span>100M MAU</span>
+              </div>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_HOT_RETENTION_DAYS">DB_HOT_RETENTION_DAYS</label>
-              <input type="number" step="any" value={inputs.DB_HOT_RETENTION_DAYS} onChange={(e) => updateInput('DB_HOT_RETENTION_DAYS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_CONN_MULTIPLIER">DB_CONN_MULTIPLIER</label>
-              <input type="number" step="any" value={inputs.DB_CONN_MULTIPLIER} onChange={(e) => updateInput('DB_CONN_MULTIPLIER', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_CONN_OVERHEAD">DB_CONN_OVERHEAD</label>
-              <input type="number" step="any" value={inputs.DB_CONN_OVERHEAD} onChange={(e) => updateInput('DB_CONN_OVERHEAD', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_READ_REPLICA_QPS">DB_READ_REPLICA_QPS</label>
-              <input type="number" step="any" value={inputs.DB_READ_REPLICA_QPS} onChange={(e) => updateInput('DB_READ_REPLICA_QPS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_SSD_IOPS_PER_GB">DB_SSD_IOPS_PER_GB</label>
-              <input type="number" step="any" value={inputs.DB_SSD_IOPS_PER_GB} onChange={(e) => updateInput('DB_SSD_IOPS_PER_GB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_IOPS_PER_QUERY">DB_IOPS_PER_QUERY</label>
-              <input type="number" step="any" value={inputs.DB_IOPS_PER_QUERY} onChange={(e) => updateInput('DB_IOPS_PER_QUERY', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block E - Cache</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="SESSION_SIZE_KB">SESSION_SIZE_KB</label>
-              <input type="number" step="any" value={inputs.SESSION_SIZE_KB} onChange={(e) => updateInput('SESSION_SIZE_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CATALOG_SKUS">CATALOG_SKUS</label>
-              <input type="number" step="any" value={inputs.CATALOG_SKUS} onChange={(e) => updateInput('CATALOG_SKUS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CATALOG_ENTRY_KB">CATALOG_ENTRY_KB</label>
-              <input type="number" step="any" value={inputs.CATALOG_ENTRY_KB} onChange={(e) => updateInput('CATALOG_ENTRY_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="HOT_SKU_COUNT">HOT_SKU_COUNT</label>
-              <input type="number" step="any" value={inputs.HOT_SKU_COUNT} onChange={(e) => updateInput('HOT_SKU_COUNT', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="HOT_SKU_ENTRY_KB">HOT_SKU_ENTRY_KB</label>
-              <input type="number" step="any" value={inputs.HOT_SKU_ENTRY_KB} onChange={(e) => updateInput('HOT_SKU_ENTRY_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CACHE_OVERHEAD_FACTOR">CACHE_OVERHEAD_FACTOR</label>
-              <input type="number" step="any" value={inputs.CACHE_OVERHEAD_FACTOR} onChange={(e) => updateInput('CACHE_OVERHEAD_FACTOR', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="REDIS_SHARDS">REDIS_SHARDS</label>
-              <input type="number" step="any" value={inputs.REDIS_SHARDS} onChange={(e) => updateInput('REDIS_SHARDS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="REDIS_HEADROOM">REDIS_HEADROOM</label>
-              <input type="number" step="any" value={inputs.REDIS_HEADROOM} onChange={(e) => updateInput('REDIS_HEADROOM', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="REDIS_OPS_PER_NODE">REDIS_OPS_PER_NODE</label>
-              <input type="number" step="any" value={inputs.REDIS_OPS_PER_NODE} onChange={(e) => updateInput('REDIS_OPS_PER_NODE', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-white/[0.08] bg-[#090a0f] p-4 space-y-2">
+              <div className="flex justify-between text-xs">
+                <span className="text-zinc-300 font-medium">DAU % of MAU (Active Ratio)</span>
+                <span className="font-mono text-emerald-300 font-bold">{teaserDauPct}% Active</span>
+              </div>
+              <input
+                type="range"
+                min={5}
+                max={50}
+                step={1}
+                value={teaserDauPct}
+                onChange={(e) => setTeaserDauPct(Number(e.target.value))}
+                className="w-full accent-emerald-500 cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-zinc-500 font-mono">
+                <span>5% (Low)</span>
+                <span>20% (Standard)</span>
+                <span>50% (High)</span>
+              </div>
             </div>
           </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block F - Application Servers</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cores_Per_App_Instance">Cores_Per_App_Instance</label>
-              <input type="number" step="any" value={inputs.Cores_Per_App_Instance} onChange={(e) => updateInput('Cores_Per_App_Instance', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+          {/* Real-time Derived Architecture Output Cards */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            <div className="rounded-xl border border-white/[0.06] bg-black/40 p-3.5 text-center space-y-1">
+              <span className="text-[10px] font-mono uppercase text-zinc-500 block">Daily Active (DAU)</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-white">
+                {(derivedDau / 1000000).toFixed(2)}M
+              </div>
+              <span className="text-[10px] text-zinc-500 block font-mono">users / day</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="RAM_Per_App_Instance_GB">RAM_Per_App_Instance_GB</label>
-              <input type="number" step="any" value={inputs.RAM_Per_App_Instance_GB} onChange={(e) => updateInput('RAM_Per_App_Instance_GB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-indigo-500/40 bg-indigo-950/30 p-3.5 text-center space-y-1 shadow-sm">
+              <span className="text-[10px] font-mono uppercase text-indigo-300 font-bold block">Peak API RPS</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-indigo-200">
+                {derivedPeakRps.toLocaleString()}
+              </div>
+              <span className="text-[10px] text-indigo-400/80 block font-mono">2x buffer req/s</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Order_Svc_Instances">Order_Svc_Instances</label>
-              <input type="number" step="any" value={inputs.Order_Svc_Instances} onChange={(e) => updateInput('Order_Svc_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-purple-500/30 bg-purple-950/20 p-3.5 text-center space-y-1">
+              <span className="text-[10px] font-mono uppercase text-purple-300 block">Kafka Brokers</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-purple-200">
+                {derivedKafkaBrokers} Nodes
+              </div>
+              <span className="text-[10px] text-purple-400/80 block font-mono">KRaft Quorum</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Payment_Svc_Instances">Payment_Svc_Instances</label>
-              <input type="number" step="any" value={inputs.Payment_Svc_Instances} onChange={(e) => updateInput('Payment_Svc_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-blue-500/30 bg-blue-950/20 p-3.5 text-center space-y-1">
+              <span className="text-[10px] font-mono uppercase text-blue-300 block">DB Storage / Mo</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-blue-200">
+                {derivedDbStorageGb.toLocaleString()} GB
+              </div>
+              <span className="text-[10px] text-blue-400/80 block font-mono">hot OLTP SSD</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Inventory_Svc_Instances">Inventory_Svc_Instances</label>
-              <input type="number" step="any" value={inputs.Inventory_Svc_Instances} onChange={(e) => updateInput('Inventory_Svc_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-amber-500/30 bg-amber-950/20 p-3.5 text-center space-y-1">
+              <span className="text-[10px] font-mono uppercase text-amber-300 block">Redis RAM</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-amber-200">
+                ~{Math.round(derivedDbStorageGb * 0.2)} GB
+              </div>
+              <span className="text-[10px] text-amber-400/80 block font-mono">hot SKU cache</span>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Notification_Svc_Instances">Notification_Svc_Instances</label>
-              <input type="number" step="any" value={inputs.Notification_Svc_Instances} onChange={(e) => updateInput('Notification_Svc_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Search_Svc_Instances">Search_Svc_Instances</label>
-              <input type="number" step="any" value={inputs.Search_Svc_Instances} onChange={(e) => updateInput('Search_Svc_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Gateway_Instances">Gateway_Instances</label>
-              <input type="number" step="any" value={inputs.Gateway_Instances} onChange={(e) => updateInput('Gateway_Instances', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="RPS_Per_App_Instance">RPS_Per_App_Instance</label>
-              <input type="number" step="any" value={inputs.RPS_Per_App_Instance} onChange={(e) => updateInput('RPS_Per_App_Instance', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block G - API Gateway / Edge</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Gateway_RPS_Capacity">Gateway_RPS_Capacity</label>
-              <input type="number" step="any" value={inputs.Gateway_RPS_Capacity} onChange={(e) => updateInput('Gateway_RPS_Capacity', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Gateway_CPU_Util_Target">Gateway_CPU_Util_Target</label>
-              <input type="number" step="any" value={inputs.Gateway_CPU_Util_Target} onChange={(e) => updateInput('Gateway_CPU_Util_Target', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Gateway_Overhead_ms">Gateway_Overhead_ms</label>
-              <input type="number" step="any" value={inputs.Gateway_Overhead_ms} onChange={(e) => updateInput('Gateway_Overhead_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="SSL_Handshake_ms">SSL_Handshake_ms</label>
-              <input type="number" step="any" value={inputs.SSL_Handshake_ms} onChange={(e) => updateInput('SSL_Handshake_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="SSL_Rate_Pct">SSL_Rate_Pct</label>
-              <input type="number" step="any" value={inputs.SSL_Rate_Pct} onChange={(e) => updateInput('SSL_Rate_Pct', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="WAF_Rules">WAF_Rules</label>
-              <input type="number" step="any" value={inputs.WAF_Rules} onChange={(e) => updateInput('WAF_Rules', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Rate_Limit_Anonymous_RPM">Rate_Limit_Anonymous_RPM</label>
-              <input type="number" step="any" value={inputs.Rate_Limit_Anonymous_RPM} onChange={(e) => updateInput('Rate_Limit_Anonymous_RPM', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Rate_Limit_User_RPM">Rate_Limit_User_RPM</label>
-              <input type="number" step="any" value={inputs.Rate_Limit_User_RPM} onChange={(e) => updateInput('Rate_Limit_User_RPM', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Rate_Limit_Premium_RPM">Rate_Limit_Premium_RPM</label>
-              <input type="number" step="any" value={inputs.Rate_Limit_Premium_RPM} onChange={(e) => updateInput('Rate_Limit_Premium_RPM', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+
+            <div className="rounded-xl border border-emerald-500/40 bg-emerald-950/30 p-3.5 text-center space-y-1">
+              <span className="text-[10px] font-mono uppercase text-emerald-300 font-bold block">AWS Cost</span>
+              <div className="text-base sm:text-lg font-bold font-mono text-emerald-200">
+                ${derivedMonthlyCost.toLocaleString()}
+              </div>
+              <span className="text-[10px] text-emerald-400/80 block font-mono">/ mo ($8.46/1k)</span>
             </div>
           </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block H - Network / Latency</h2>
+
+          {/* Action to launch full studio */}
+          <div className="pt-2 text-center">
+            <Link
+              href="/studio"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors group"
+            >
+              <span>Explore all 25 deep-dive subsystem calculation sheets</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DNS_Lookup_ms">DNS_Lookup_ms</label>
-              <input type="number" step="any" value={inputs.DNS_Lookup_ms} onChange={(e) => updateInput('DNS_Lookup_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+        </div>
+      </section>
+
+      {/* 16-LAYER ARCHITECTURE RUBRIC & FEATURES */}
+      <section id="features" className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
+        <div className="text-center space-y-2">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-purple-400 font-semibold px-2.5 py-0.5 rounded bg-purple-500/10 border border-purple-500/20">
+            Complete Coverage
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            End-to-End System Design Architecture Toolkit
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl mx-auto">
+            Everything you need to navigate requirements, derive exact capacities, justify engine tradeoffs, and survive interviewer probing.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((f, idx) => (
+            <div
+              key={idx}
+              className="rounded-xl border border-white/[0.08] bg-[#0c0d14] p-5 sm:p-6 space-y-3 hover:border-white/[0.15] transition-all hover:-translate-y-0.5 shadow-lg"
+            >
+              <div className={clsx('w-9 h-9 rounded-lg border flex items-center justify-center', f.color)}>
+                <f.icon size={18} />
+              </div>
+              <h3 className="text-sm sm:text-base font-bold text-white">{f.title}</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">{f.desc}</p>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CDN_Edge_ms">CDN_Edge_ms</label>
-              <input type="number" step="any" value={inputs.CDN_Edge_ms} onChange={(e) => updateInput('CDN_Edge_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+          ))}
+        </div>
+      </section>
+
+      {/* 30 CORE CONCEPTS MASTER PRIMER BANNER */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="rounded-2xl border border-indigo-500/30 bg-gradient-to-br from-[#0c0e18] via-[#090b14] to-[#120f22] p-6 sm:p-10 shadow-2xl space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-white/[0.08]">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 text-indigo-400 font-mono text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20">
+                <Sparkles size={12} />
+                <span>Sheet 22 Master Sizing Reference</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+                30 Core System Design Concepts & Mathematical Primer
+              </h2>
+              <p className="text-xs text-zinc-400 max-w-2xl">
+                Formulas, numbers to quote, Bloom filters, Geohashing, Consistent Hashing, PACELC theorem, B+ Trees, and engine trade-offs.
+              </p>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="CDN_Origin_Miss_ms">CDN_Origin_Miss_ms</label>
-              <input type="number" step="any" value={inputs.CDN_Origin_Miss_ms} onChange={(e) => updateInput('CDN_Origin_Miss_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="LB_Forward_ms">LB_Forward_ms</label>
-              <input type="number" step="any" value={inputs.LB_Forward_ms} onChange={(e) => updateInput('LB_Forward_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Service_Process_ms">Service_Process_ms</label>
-              <input type="number" step="any" value={inputs.Service_Process_ms} onChange={(e) => updateInput('Service_Process_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DB_Query_ms">DB_Query_ms</label>
-              <input type="number" step="any" value={inputs.DB_Query_ms} onChange={(e) => updateInput('DB_Query_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Redis_Query_ms">Redis_Query_ms</label>
-              <input type="number" step="any" value={inputs.Redis_Query_ms} onChange={(e) => updateInput('Redis_Query_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="SLA_P95_ms">SLA_P95_ms</label>
-              <input type="number" step="any" value={inputs.SLA_P95_ms} onChange={(e) => updateInput('SLA_P95_ms', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
+
+            <Link
+              href="/concepts"
+              className="self-start md:self-center inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all group shrink-0"
+            >
+              <span>Explore All 30 Concepts</span>
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block I - DLQ / Retry</h2>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5 text-xs font-mono">
+            {[
+              { name: '1. APIs & Protocols', path: '/concepts' },
+              { name: '2. API Gateways', path: '/concepts' },
+              { name: '6. Load Balancing', path: '/concepts' },
+              { name: '11. CAP & PACELC', path: '/concepts' },
+              { name: '14. B+ Tree Indexes', path: '/concepts' },
+              { name: '15. DB Sharding', path: '/concepts' },
+              { name: '16. Consistent Hashing', path: '/concepts' },
+              { name: '17. Debezium CDC', path: '/concepts' },
+              { name: '18. 80/20 Caching', path: '/concepts' },
+              { name: '22. Rate Limiting', path: '/concepts' },
+              { name: '24. Bloom Filters', path: '/concepts' },
+              { name: '30. Geohashing', path: '/concepts' },
+            ].map((c, i) => (
+              <Link
+                key={i}
+                href={c.path}
+                className="p-2 rounded-lg border border-white/[0.06] bg-black/40 hover:bg-white/[0.04] text-zinc-300 hover:text-indigo-300 transition-colors text-[10.5px] truncate"
+              >
+                {c.name}
+              </Link>
+            ))}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Max_Retries">Max_Retries</label>
-              <input type="number" step="any" value={inputs.Max_Retries} onChange={(e) => updateInput('Max_Retries', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
+        </div>
+      </section>
+
+      {/* 10 MASTER FAANG INTERVIEW SCENARIOS */}
+      <section id="scenarios" className="max-w-6xl mx-auto px-4 sm:px-6 space-y-8">
+        <div className="text-center space-y-2">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-semibold px-2.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/20">
+            High-Yield Scenarios
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Master 10 Real-World Interview Case Studies
+          </h2>
+          <p className="text-xs sm:text-sm text-zinc-400 max-w-2xl mx-auto">
+            Pre-configured architectures with model answers, red flags to avoid, and Staff-level bonus points.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {scenarios.map((s) => (
+            <div
+              key={s.num}
+              className="rounded-xl border border-white/[0.08] bg-[#0e1017] p-4 sm:p-5 space-y-2.5 hover:border-indigo-500/40 transition-colors shadow-sm"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs font-bold text-indigo-400 px-2 py-0.5 rounded bg-indigo-950/40 border border-indigo-500/20">
+                  Scenario #{s.num}
+                </span>
+                <span className="text-[10px] font-mono text-zinc-400">{s.tag}</span>
+              </div>
+              <h3 className="text-sm font-semibold text-white">{s.title}</h3>
+              <p className="text-xs text-zinc-400 leading-relaxed">{s.summary}</p>
             </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Retry_Backoff_Base_sec">Retry_Backoff_Base_sec</label>
-              <input type="number" step="any" value={inputs.Retry_Backoff_Base_sec} onChange={(e) => updateInput('Retry_Backoff_Base_sec', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Retry_Backoff_Multiplier">Retry_Backoff_Multiplier</label>
-              <input type="number" step="any" value={inputs.Retry_Backoff_Multiplier} onChange={(e) => updateInput('Retry_Backoff_Multiplier', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DLQ_Retention_Days">DLQ_Retention_Days</label>
-              <input type="number" step="any" value={inputs.DLQ_Retention_Days} onChange={(e) => updateInput('DLQ_Retention_Days', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Reprocess_Batch_Size">Reprocess_Batch_Size</label>
-              <input type="number" step="any" value={inputs.Reprocess_Batch_Size} onChange={(e) => updateInput('Reprocess_Batch_Size', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Reprocess_Interval_min">Reprocess_Interval_min</label>
-              <input type="number" step="any" value={inputs.Reprocess_Interval_min} onChange={(e) => updateInput('Reprocess_Interval_min', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
+          ))}
+        </div>
+
+        <div className="text-center pt-2">
+          <Link
+            href="/practice"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.06] text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
+          >
+            <span>View All 10 Practice Flashcards & 60-Min Timer &rarr;</span>
+          </Link>
+        </div>
+      </section>
+
+      {/* FREQUENTLY ASKED QUESTIONS */}
+      <section id="faq" className="max-w-4xl mx-auto px-4 sm:px-6 space-y-6">
+        <div className="text-center space-y-2">
+          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400 font-semibold px-2.5 py-0.5 rounded bg-white/[0.04] border border-white/[0.08]">
+            Frequently Asked Questions
+          </span>
+          <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+            Common Questions & Answers
+          </h2>
+        </div>
+
+        <div className="space-y-3">
+          {faqs.map((faq, idx) => {
+            const isOpen = openFaq === idx;
+            return (
+              <div
+                key={idx}
+                className="rounded-xl border border-white/[0.08] bg-[#0c0d14] overflow-hidden transition-colors"
+              >
+                <button
+                  onClick={() => setOpenFaq(isOpen ? null : idx)}
+                  className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer hover:bg-white/[0.02] gap-4"
+                >
+                  <span className="text-sm font-semibold text-white">{faq.q}</span>
+                  {isOpen ? (
+                    <ChevronUp size={16} className="text-indigo-400 shrink-0" />
+                  ) : (
+                    <ChevronDown size={16} className="text-zinc-500 shrink-0" />
+                  )}
+                </button>
+
+                {isOpen && (
+                  <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-zinc-300 leading-relaxed border-t border-white/[0.04] bg-black/20">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* FINAL CALL TO ACTION BANNER */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="relative rounded-3xl border border-indigo-500/40 bg-gradient-to-r from-indigo-950/60 via-[#0e101f] to-purple-950/60 p-8 sm:p-14 text-center space-y-6 shadow-2xl overflow-hidden">
+          <div className="space-y-3 max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+              Ready to Ace Your Next System Design Interview?
+            </h2>
+            <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed">
+              No sign-up. No credit card. 100% free access to all 25 architecture sheets, capacity calculators, and interview rubrics.
+            </p>
           </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block J - Traffic Spike / DDoS</h2>
+
+          <div className="pt-2">
+            <Link
+              href="/studio"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105 transition-all cursor-pointer group"
+            >
+              <span>Launch Studio (100% Free)</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Spike_Multiplier">Spike_Multiplier</label>
-              <input type="number" step="any" value={inputs.Spike_Multiplier} onChange={(e) => updateInput('Spike_Multiplier', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner disabled:bg-[#f0f0f0]" disabled/>
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="DDoS_Peak_RPS">DDoS_Peak_RPS</label>
-              <input type="number" step="any" value={inputs.DDoS_Peak_RPS} onChange={(e) => updateInput('DDoS_Peak_RPS', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Auto_Scale_Trigger_CPU">Auto_Scale_Trigger_CPU</label>
-              <input type="number" step="any" value={inputs.Auto_Scale_Trigger_CPU} onChange={(e) => updateInput('Auto_Scale_Trigger_CPU', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Auto_Scale_Cooldown_sec">Auto_Scale_Cooldown_sec</label>
-              <input type="number" step="any" value={inputs.Auto_Scale_Cooldown_sec} onChange={(e) => updateInput('Auto_Scale_Cooldown_sec', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Load_Shed_Threshold_Pct">Load_Shed_Threshold_Pct</label>
-              <input type="number" step="any" value={inputs.Load_Shed_Threshold_Pct} onChange={(e) => updateInput('Load_Shed_Threshold_Pct', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block K - Observability</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Metrics_Retention_Days">Metrics_Retention_Days</label>
-              <input type="number" step="any" value={inputs.Metrics_Retention_Days} onChange={(e) => updateInput('Metrics_Retention_Days', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Log_Retention_Days">Log_Retention_Days</label>
-              <input type="number" step="any" value={inputs.Log_Retention_Days} onChange={(e) => updateInput('Log_Retention_Days', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Trace_Sample_Rate_Pct">Trace_Sample_Rate_Pct</label>
-              <input type="number" step="any" value={inputs.Trace_Sample_Rate_Pct} onChange={(e) => updateInput('Trace_Sample_Rate_Pct', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Log_Size_Per_Request_KB">Log_Size_Per_Request_KB</label>
-              <input type="number" step="any" value={inputs.Log_Size_Per_Request_KB} onChange={(e) => updateInput('Log_Size_Per_Request_KB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-        <section className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-4">
-          <div className="border-b border-[#e0e0e0] pb-2 mb-3">
-            <h2 className="text-sm font-bold text-gray-800 uppercase tracking-wide">Block L - Cost</h2>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-4 gap-y-3">
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_Broker_hr">Cost_Broker_hr</label>
-              <input type="number" step="any" value={inputs.Cost_Broker_hr} onChange={(e) => updateInput('Cost_Broker_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_App_hr">Cost_App_hr</label>
-              <input type="number" step="any" value={inputs.Cost_App_hr} onChange={(e) => updateInput('Cost_App_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_DB_hr">Cost_DB_hr</label>
-              <input type="number" step="any" value={inputs.Cost_DB_hr} onChange={(e) => updateInput('Cost_DB_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_Redis_hr">Cost_Redis_hr</label>
-              <input type="number" step="any" value={inputs.Cost_Redis_hr} onChange={(e) => updateInput('Cost_Redis_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_Gateway_hr">Cost_Gateway_hr</label>
-              <input type="number" step="any" value={inputs.Cost_Gateway_hr} onChange={(e) => updateInput('Cost_Gateway_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_NLB_hr">Cost_NLB_hr</label>
-              <input type="number" step="any" value={inputs.Cost_NLB_hr} onChange={(e) => updateInput('Cost_NLB_hr', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_Hours_Month">Cost_Hours_Month</label>
-              <input type="number" step="any" value={inputs.Cost_Hours_Month} onChange={(e) => updateInput('Cost_Hours_Month', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_Egress_Per_GB">Cost_Egress_Per_GB</label>
-              <input type="number" step="any" value={inputs.Cost_Egress_Per_GB} onChange={(e) => updateInput('Cost_Egress_Per_GB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_S3_Per_TB">Cost_S3_Per_TB</label>
-              <input type="number" step="any" value={inputs.Cost_S3_Per_TB} onChange={(e) => updateInput('Cost_S3_Per_TB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-            <div className="flex flex-col gap-0.5">
-              <label className="text-[10px] font-semibold text-gray-700 tracking-tight truncate" title="Cost_CDN_Per_GB">Cost_CDN_Per_GB</label>
-              <input type="number" step="any" value={inputs.Cost_CDN_Per_GB} onChange={(e) => updateInput('Cost_CDN_Per_GB', Number(e.target.value))} className="bg-white border border-[#ccc] rounded px-2 py-1 text-[13px] text-gray-900 focus:outline-none focus:border-gray-500 shadow-inner " />
-            </div>
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }
