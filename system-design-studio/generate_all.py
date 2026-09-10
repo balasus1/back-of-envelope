@@ -1,4 +1,6 @@
-export interface Inputs {
+import os
+
+derivations_ts = """export interface Inputs {
   MAU: number; DAU_PCT: number; PEAK_CONCURRENT_PCT: number; ACTIONS_PER_SESSION: number; PEAK_DURATION_SEC: number; SAFETY_BUFFER: number;
   READ_WRITE_SPLIT_READ_PCT: number; CACHE_HIT_PCT: number; QUERIES_PER_API_CALL: number; AVG_RESPONSE_SIZE_KB: number; AVG_REQUEST_SIZE_KB: number;
   AVG_MSG_SIZE_KB: number; REPLICATION_FACTOR: number; PRODUCER_PER_PARTITION_MBPS: number; CONSUMER_PER_PARTITION_MBPS: number; BROKER_CAPACITY_MBPS: number; MIN_BROKERS_HA: number; BROKER_MULTIPLE: number; TOPIC_RETENTION_DAYS: number;
@@ -115,3 +117,101 @@ export function getDerivations(inputs: Inputs) {
     dlqMsgs, retryTime, targetPods, shedThreshold, logsGbDay, traceGbDay, totalCost
   };
 }
+"""
+
+with open("src/lib/derivations.ts", "w") as f:
+    f.write(derivations_ts)
+
+store_ts = """import { create } from 'zustand';
+import { Inputs, defaultInputs, getDerivations } from './derivations';
+
+type Scenario = 'Normal' | 'Flash Sale' | 'Black Friday' | 'Cyber Monday' | 'DDoS';
+
+interface StoreState {
+  inputs: Inputs; scenario: Scenario;
+  setScenario: (scenario: Scenario) => void;
+  updateInput: (key: keyof Inputs, value: number) => void;
+  resetToDefault: () => void;
+  derivations: ReturnType<typeof getDerivations>;
+}
+
+const scenarioOverrides: Record<Scenario, Partial<Inputs>> = {
+  'Normal': { DAU_PCT: 20, PEAK_CONCURRENT_PCT: 20, Spike_Multiplier: 1 },
+  'Flash Sale': { DAU_PCT: 30, PEAK_CONCURRENT_PCT: 30, Spike_Multiplier: 5 },
+  'Black Friday': { DAU_PCT: 50, PEAK_CONCURRENT_PCT: 50, Spike_Multiplier: 10 },
+  'Cyber Monday': { DAU_PCT: 60, PEAK_CONCURRENT_PCT: 60, Spike_Multiplier: 15 },
+  'DDoS': { DAU_PCT: 20, PEAK_CONCURRENT_PCT: 100, Spike_Multiplier: 100 },
+};
+
+export const useStore = create<StoreState>((set) => ({
+  inputs: defaultInputs, scenario: 'Normal', derivations: getDerivations(defaultInputs),
+  setScenario: (scenario) => set((state) => {
+    const overrides = scenarioOverrides[scenario];
+    const newInputs = { ...state.inputs, ...overrides };
+    return { scenario, inputs: newInputs, derivations: getDerivations(newInputs) };
+  }),
+  updateInput: (key, value) => set((state) => {
+    const newInputs = { ...state.inputs, [key]: value };
+    return { inputs: newInputs, derivations: getDerivations(newInputs) };
+  }),
+  resetToDefault: () => set(() => ({ inputs: defaultInputs, scenario: 'Normal', derivations: getDerivations(defaultInputs) })),
+}));
+"""
+
+with open("src/lib/store.ts", "w") as f:
+    f.write(store_ts)
+
+def page_template(title, description, metrics_html):
+    return f"""'use client';
+import {{ useStore }} from '../../lib/store';
+import {{ Metric }} from '../../components/Metric';
+
+export default function Page() {{
+  const {{ derivations }} = useStore();
+  return (
+    <div className="max-w-4xl mx-auto pb-10">
+      <div className="mb-6 border-b-2 border-gray-300 pb-2">
+        <h1 className="text-2xl font-bold text-gray-900 mb-1 font-serif tracking-tight capitalize">{title}</h1>
+        <p className="text-xs text-gray-600 font-sans">{description}</p>
+      </div>
+      <div className="bg-[#fcfcfc] border border-[#d4d4d4] rounded shadow-sm p-6 space-y-4 font-sans">
+        {metrics_html}
+      </div>
+    </div>
+  );
+}}"""
+
+def metric_row(label, key):
+    return f"""<div className="flex justify-between items-center border-b border-[#eee] pb-2">
+          <span className="text-[13px] font-semibold text-gray-700">{label}</span>
+          <Metric name="{label}" metric={{derivations.{key}}} />
+        </div>"""
+
+pages = {
+    "frontend": ("Frontend & CDN", "Client-side, asset sizing, CDN edge caching.", 
+                 metric_row("Daily Egress GB", "dailyEgressGb") + metric_row("Origin Traffic GB", "originTraffic") + metric_row("CDN Edge Nodes", "edgeNodes") + metric_row("CDN Bandwidth (Gbps)", "cdnBwGbps")),
+    "gateway": ("API Gateway", "Gateway, rate limiting, auth sizing.",
+                 metric_row("Effective RPS / Pod", "effRps") + metric_row("Gateway Pods (Raw)", "gatewayPods") + metric_row("Gateway Pods (N+1 AZ)", "gatewayAzPods")),
+    "lb": ("Load Balancer", "L4/L7 LB connection math.",
+           metric_row("Concurrent Connections", "concurrentConns")),
+    "kafka": ("Kafka Design", "Brokers, partitions, KRaft sizing.",
+              metric_row("Kafka Throughput (MB/s)", "kafkaMbs") + metric_row("Internal Replication (MB/s)", "kafkaInternalMbs") + metric_row("Total Partitions", "kafkaPartitions") + metric_row("Total Brokers", "kafkaBrokers")),
+    "db": ("Database Design", "PostgreSQL QPS, IOPS, and storage.",
+           metric_row("Raw DB QPS", "dbQps") + metric_row("Actual Disk QPS (post-cache)", "actualDbQps") + metric_row("IOPS Required", "dbIops") + metric_row("Hot Data Storage (GB)", "hotDataGb") + metric_row("Total Storage w/ Indexes & WAL", "totalDbStorage") + metric_row("Read Replicas", "dbReplicas")),
+    "cache": ("Cache (Redis)", "Redis cluster sizing.",
+              metric_row("Total Cache Size (GB)", "cacheTotalGb") + metric_row("Cache Ops/sec", "cacheOps") + metric_row("Redis Shards", "cacheNodes")),
+    "dlq": ("DLQ & Error Handling", "Retry backoff and reprocessing logic.",
+            metric_row("Total Retry Time (s)", "retryTime") + metric_row("Daily Messages to DLQ", "dlqMsgs")),
+    "spikes": ("Traffic Spikes & DDoS", "Auto-scaling and load shedding thresholds.",
+               metric_row("Target App Pods", "targetPods") + metric_row("Shed Threshold (RPS)", "shedThreshold")),
+    "observability": ("Observability", "Metrics, logs, traces volume.",
+                      metric_row("Daily Logs Volume (GB)", "logsGbDay") + metric_row("Daily Traces Volume (GB)", "traceGbDay")),
+    "cost": ("Cost Estimator", "Monthly infrastructure cost breakdown.",
+             metric_row("Grand Total Infra Cost", "totalCost"))
+}
+
+for route, (title, desc, m_html) in pages.items():
+    with open(f"src/app/{route}/page.tsx", "w") as f:
+        f.write(page_template(title, desc, m_html))
+
+print("All components generated.")
