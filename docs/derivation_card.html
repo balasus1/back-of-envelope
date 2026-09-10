@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>System Design Derivation Card</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; color: #1a1a1a; }
+  .sheet { padding: 14px 18px; }
+  h1 { font-size: 20px; margin: 0 0 2px 0; color: #2C3E50; }
+  .sub { font-size: 11px; color: #555; margin-bottom: 10px; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
+  ol { margin: 0; padding-left: 18px; counter-reset: item; }
+  li { margin-bottom: 6px; font-size: 11.5px; line-height: 1.35; }
+  .f { font-family: Consolas, monospace; background: #F2F2F2; padding: 1px 4px; border-radius: 3px; }
+  .lbl { font-weight: bold; color: #1B4F72; }
+  .anchor { background: #D4EDDA; padding: 6px 8px; border-radius: 4px; margin-top: 10px; font-size: 11.5px; }
+  footer { margin-top: 10px; font-size: 9.5px; color: #777; border-top: 1px solid #ccc; padding-top: 4px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>System Design Derivation Card &mdash; 25 Core Formulas, In Calculation Order</h1>
+  <div class="sub">Companion to System_Design_Master_Calculator.xlsx &middot; Amazon/Flipkart-scale e-commerce &middot; walk this order on the whiteboard</div>
+  <div class="cols">
+    <ol>
+      <li><span class="lbl">DAU</span> = <span class="f">MAU &times; DAU% / 100</span></li>
+      <li><span class="lbl">Peak Concurrent Users (PCU)</span> = <span class="f">DAU &times; Peak_Concurrent% / 100</span></li>
+      <li><span class="lbl">Raw API RPS</span> = <span class="f">(PCU &times; Actions/Session) / Peak_Duration_sec</span></li>
+      <li><span class="lbl">Peak API RPS</span> = <span class="f">Raw_RPS &times; Safety_Buffer</span> &mdash; the anchor number</li>
+      <li><span class="lbl">Origin-Bound Dynamic RPS</span> = <span class="f">Peak_RPS &times; (1 &minus; CDN_Hit%)</span></li>
+      <li><span class="lbl">Gateway Effective RPS/Instance</span> = <span class="f">Gateway_RPS_Capacity &times; CPU_Util_Target%</span></li>
+      <li><span class="lbl">Raw Gateway Instances</span> = <span class="f">ROUNDUP(Peak_RPS / Effective_RPS, 0)</span></li>
+      <li><span class="lbl">Total Gateway Instances</span> = <span class="f">(ROUNDUP(Raw / AZs,0)+1) &times; AZs</span> &mdash; N+1 per AZ</li>
+      <li><span class="lbl">Gateway Latency</span> = <span class="f">Overhead_ms + SSL_Handshake_ms &times; SSL_Rate%</span></li>
+      <li><span class="lbl">Total DB QPS</span> = <span class="f">Peak_RPS &times; Queries/API_Call</span></li>
+      <li><span class="lbl">Actual DB QPS (post-cache)</span> = <span class="f">Read_QPS &times; (1&minus;Cache_Hit%) + Write_QPS</span></li>
+      <li><span class="lbl">DB IOPS Required</span> = <span class="f">Actual_DB_QPS &times; IOPS_per_Query &times; 2 (headroom)</span></li>
+      <li><span class="lbl">max_connections</span> = <span class="f">Total_App_Instances &times; (Cores&times;2+1) &times; 1.5</span></li>
+      <li><span class="lbl">Hot Data Size (GB)</span> = <span class="f">Write_QPS &times; 86400 &times; Retention_days &times; Row_KB / 1024&sup2;</span></li>
+      <li><span class="lbl">Redis Cluster Size</span> = <span class="f">(Sessions+Catalog+HotSKU) &times; Overhead / Shards &times; Headroom</span></li>
+      <li><span class="lbl">Kafka MB/s</span> = <span class="f">Peak_RPS &times; Avg_Msg_KB / 1024</span></li>
+      <li><span class="lbl">Kafka Internal MB/s</span> = <span class="f">Kafka_MBps &times; Replication_Factor</span></li>
+      <li><span class="lbl">Partitions (adjusted)</span> = <span class="f">ROUNDUP(MAX(prod-bound,cons-bound,minHA)/BrokerMultiple,0) &times; BrokerMultiple</span></li>
+      <li><span class="lbl">Brokers</span> = <span class="f">MAX(MinBrokersHA, ROUNDUP(Internal_MBps/BrokerCapacity,0))</span></li>
+      <li><span class="lbl">P95 Latency</span> = <span class="f">Blended_P50 &times; 1.8</span> &mdash; check against SLA_P95_ms</li>
+      <li><span class="lbl">DLQ Failure Rate</span> = <span class="f">1 &minus; (Per-Attempt-Success%)^Max_Retries</span></li>
+      <li><span class="lbl">Reprocess Throughput</span> = <span class="f">Batch_Size &times; Workers / Interval_min</span></li>
+      <li><span class="lbl">Pre-Scale Target Instances</span> = <span class="f">ROUNDUP(Spike_RPS / RPS_per_Instance, 0)</span></li>
+      <li><span class="lbl">Load-Shed Threshold RPS</span> = <span class="f">Total_Capacity &times; Shed_Threshold%</span></li>
+      <li><span class="lbl">Monthly Infra Cost</span> = <span class="f">&Sigma;(Count &times; $/hr &times; 730) + storage/egress lines</span></li>
+      <li><span class="lbl">Cost per 1,000 DAU</span> = <span class="f">Total_Monthly_Cost / (DAU/1000)</span> &mdash; efficiency north star</li>
+    </ol>
+  </div>
+  <div class="anchor"><b>Say this first, always:</b> "10M MAU &rarr; 2M DAU &rarr; 400k concurrent &rarr; ~3.3k raw RPS &rarr; ~7k RPS with a 2x buffer." Every number on this card traces back to that one line.</div>
+  <footer>Generated for Bala &middot; companion to System_Design_Master_Calculator.xlsx &middot; all figures recalculate live off 01_Master_Inputs</footer>
+</div>
+</body>
+</html>

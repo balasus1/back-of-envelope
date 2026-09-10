@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cloud Provider Cheat Sheet</title>
+<style>
+  @page { size: A4 landscape; margin: 10mm; }
+  * { box-sizing: border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; margin: 0; color: #1a1a1a; }
+  .sheet { padding: 14px 18px; }
+  h1 { font-size: 20px; margin: 0 0 2px 0; color: #2C3E50; }
+  .sub { font-size: 11px; color: #555; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
+  th { background: #2C3E50; color: #fff; text-align: left; padding: 5px 6px; }
+  td { padding: 4px 6px; border-bottom: 1px solid #ddd; }
+  tr:nth-child(even) td { background: #F7F2FC; }
+  .tip { margin-top: 10px; background: #EAF2F8; padding: 8px 10px; border-radius: 4px; font-size: 11px; }
+  footer { margin-top: 8px; font-size: 9.5px; color: #777; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <h1>Cloud Provider Cheat Sheet &mdash; AWS vs GCP vs Azure vs Self-Hosted</h1>
+  <div class="sub">Companion to System_Design_Master_Calculator.xlsx, sheet 14_Cloud_Provider_Mapping</div>
+  <table>
+    <tr><th>Component</th><th>AWS</th><th>GCP</th><th>Azure</th><th>Self-Hosted / VPS</th></tr>
+    <tr><td>DNS</td><td>Route53</td><td>Cloud DNS</td><td>Azure DNS</td><td>BIND / PowerDNS</td></tr>
+    <tr><td>CDN</td><td>CloudFront</td><td>Cloud CDN</td><td>Azure CDN</td><td>Cloudflare (free tier)</td></tr>
+    <tr><td>WAF</td><td>AWS WAF</td><td>Cloud Armor</td><td>Azure WAF</td><td>ModSecurity + Nginx</td></tr>
+    <tr><td>Load Balancer L4</td><td>NLB</td><td>TCP Proxy LB</td><td>Azure LB</td><td>HAProxy / Nginx</td></tr>
+    <tr><td>Load Balancer L7</td><td>ALB</td><td>HTTP(S) LB</td><td>App Gateway</td><td>Traefik / Envoy</td></tr>
+    <tr><td>API Gateway</td><td>API Gateway</td><td>API Gateway</td><td>API Management</td><td>Kong / KrakenD</td></tr>
+    <tr><td>Container Orchestration</td><td>EKS</td><td>GKE</td><td>AKS</td><td>K3s / kubeadm</td></tr>
+    <tr><td>Service Mesh</td><td>App Mesh</td><td>Anthos Service Mesh</td><td>Open Service Mesh</td><td>Istio / Linkerd</td></tr>
+    <tr><td>Message Queue</td><td>MSK (Kafka)</td><td>Pub/Sub or Confluent</td><td>Event Hubs</td><td>Kafka on VMs</td></tr>
+    <tr><td>Database OLTP</td><td>RDS / Aurora PG</td><td>Cloud SQL</td><td>Azure Database</td><td>PostgreSQL on VM</td></tr>
+    <tr><td>Database NoSQL</td><td>DynamoDB</td><td>Firestore</td><td>Cosmos DB</td><td>Cassandra / MongoDB</td></tr>
+    <tr><td>Cache</td><td>ElastiCache Redis</td><td>Memorystore</td><td>Azure Cache for Redis</td><td>Redis on VM</td></tr>
+    <tr><td>Object Storage</td><td>S3</td><td>Cloud Storage</td><td>Blob Storage</td><td>MinIO / Ceph</td></tr>
+    <tr><td>Search</td><td>OpenSearch</td><td>Elastic Cloud</td><td>Azure Cognitive Search</td><td>Elasticsearch</td></tr>
+    <tr><td>Monitoring</td><td>CloudWatch</td><td>Cloud Ops</td><td>Azure Monitor</td><td>Prometheus + Grafana</td></tr>
+    <tr><td>Logging</td><td>CloudWatch Logs</td><td>Cloud Logging</td><td>Log Analytics</td><td>Loki / ELK</td></tr>
+    <tr><td>Tracing</td><td>X-Ray</td><td>Cloud Trace</td><td>App Insights</td><td>Jaeger</td></tr>
+    <tr><td>Secrets</td><td>Secrets Manager</td><td>Secret Manager</td><td>Key Vault</td><td>HashiCorp Vault</td></tr>
+    <tr><td>CI/CD</td><td>CodePipeline</td><td>Cloud Build</td><td>Azure DevOps</td><td>GitLab CI / Jenkins</td></tr>
+    <tr><td>Identity</td><td>Cognito / IAM</td><td>Identity Platform</td><td>Entra ID</td><td>Keycloak</td></tr>
+    <tr><td>Serverless</td><td>Lambda</td><td>Cloud Functions</td><td>Azure Functions</td><td>OpenFaaS</td></tr>
+    <tr><td>VPS Providers</td><td>Lightsail</td><td>Compute Engine</td><td>Azure VM</td><td>DigitalOcean / Linode / Hetzner</td></tr>
+  </table>
+  <div class="tip"><b>Interview tip:</b> default to AWS &mdash; widest service catalog, and the interviewer is most likely to know it. Switch to GCP only if they hint at BigQuery/Spanner, or Azure for enterprise/AD-heavy shops.</div>
+  <footer>Generated for Bala &middot; companion to System_Design_Master_Calculator.xlsx</footer>
+</div>
+</body>
+</html>
