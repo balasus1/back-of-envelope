@@ -30,26 +30,32 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-slate-900 border-r border-slate-800 h-screen overflow-y-auto flex-shrink-0">
-      <div className="p-4 border-b border-slate-800">
-        <h1 className="text-xl font-bold text-white leading-tight">System Design<br/>Studio</h1>
+    <div className="w-56 bg-[#ebebeb] border-r border-[#d4d4d4] h-screen overflow-y-auto flex-shrink-0 shadow-[1px_0_5px_rgba(0,0,0,0.02)]">
+      <div className="p-3 border-b border-[#d4d4d4] bg-[#e0e0e0]">
+        <h1 className="text-base font-bold text-gray-900 leading-tight tracking-tight">System Design Studio</h1>
+        <p className="text-[10px] text-gray-600 mt-1 uppercase tracking-wider font-sans">Interview Calculator</p>
       </div>
-      <nav className="p-2 space-y-1">
+      <nav className="p-1 space-y-[2px]">
         {routes.map((route) => (
           <Link
             key={route.path}
             href={route.path}
             className={clsx(
-              'block px-3 py-2 rounded-md text-sm font-medium transition-colors',
+              'block px-2 py-1.5 rounded text-[13px] transition-colors font-medium',
               pathname === route.path
-                ? 'bg-blue-600 text-white'
-                : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                ? 'bg-gray-800 text-white shadow-sm'
+                : 'text-gray-700 hover:bg-[#dcdcdc] hover:text-gray-900'
             )}
           >
             {route.name}
           </Link>
         ))}
       </nav>
+      <div className="p-3 border-t border-[#d4d4d4] mt-auto">
+        <div className="text-[10px] text-gray-500 font-sans leading-tight">
+          <strong>Tip:</strong> Hover over any calculated metric to see its derivation and dependencies.
+        </div>
+      </div>
     </div>
   );
 }
