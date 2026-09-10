@@ -1462,6 +1462,7 @@ wb.active = 0
 finalize_named_ranges()
 print("Named ranges defined:", len(NAMED_RANGES))
 
-out_path = "/home/claude/System_Design_Master_Calculator.xlsx"
+out_path = "docs/System_Design_Master_Calculator.xlsx"
+print(f"Saving to {out_path}...")
 wb.save(out_path)
-print("Saved", out_path)
+print("Done!")
