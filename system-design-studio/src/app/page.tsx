@@ -158,15 +158,17 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] sm:w-[600px] h-[300px] sm:h-[400px] bg-indigo-600/15 rounded-full blur-[120px] pointer-events-none -z-10" />
 
         {/* Eyebrow Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/40 text-indigo-300 text-xs font-mono font-medium shadow-sm">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/40 text-indigo-300 text-xs font-mono font-medium shadow-sm">
           <Sparkles size={14} className="text-indigo-400 shrink-0" />
-          <span>100% Free • No Sign-Up • No Credit Card Required</span>
+          <span>Calculate like an <strong className="text-white font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">Architect</strong></span>
         </div>
 
         {/* Main Headline */}
         <div className="space-y-4 max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
-            Stop Guessing.{' '}
+            <span className="block text-2xl sm:text-4xl md:text-5xl text-indigo-200 font-bold mb-3 tracking-normal">
+              Understand → Practice → Repeat
+            </span>
             <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
               Master Back-of-the-Envelope Math
             </span>{' '}
