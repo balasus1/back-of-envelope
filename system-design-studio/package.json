@@ -12,6 +12,7 @@
   "dependencies": {
     "@tanstack/react-table": "^9.2.4",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "@xyflow/react": "^12.11.6",
     "clsx": "^2.1.1",
     "lucide-react": "^1.44.0",

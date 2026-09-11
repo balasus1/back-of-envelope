@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import { AppShell } from '../components/AppShell';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const viewport: Viewport = {
   themeColor: '#090a0f',
@@ -116,6 +117,7 @@ export default function RootLayout({
           {children}
         </AppShell>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
