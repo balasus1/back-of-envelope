@@ -26,6 +26,17 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: none;
+  }
+
+  @supports not (backdrop-filter: blur(1px)) {
+    header {
+      background-color: var(--bg-main) !important;
+    }
+  }
 }
 
 /* Linear-style sharp scrollbars */

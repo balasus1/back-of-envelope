@@ -308,14 +308,14 @@ export function getDerivations(inputs: Inputs) {
     `(${pcuVal.toLocaleString()} × ${inputs.ACTIONS_PER_SESSION}) / ${inputs.PEAK_DURATION_SEC}s = ${rawRpsVal.toFixed(1)} req/s`
   );
 
-  const peakRpsVal = rawRpsVal * inputs.SAFETY_BUFFER * inputs.Spike_Multiplier;
+  const peakRpsVal = rawRpsVal * inputs.SAFETY_BUFFER;
   const peakRps = createMetric(
     peakRpsVal,
     'req/s',
-    'Raw_RPS × Safety_Buffer × Spike_Multiplier',
+    'Raw_RPS × Safety_Buffer',
     'The core anchor metric for all downstream compute, network, database, and cache sizing.',
-    ['Raw_RPS', 'SAFETY_BUFFER', 'Spike_Multiplier'],
-    `${rawRpsVal.toFixed(1)} × ${inputs.SAFETY_BUFFER} × ${inputs.Spike_Multiplier} = ${peakRpsVal.toFixed(1)} req/s`
+    ['Raw_RPS', 'SAFETY_BUFFER'],
+    `${rawRpsVal.toFixed(1)} × ${inputs.SAFETY_BUFFER} = ${peakRpsVal.toFixed(1)} req/s`
   );
 
   const dailyReqsVal = dauVal * inputs.ACTIONS_PER_SESSION;

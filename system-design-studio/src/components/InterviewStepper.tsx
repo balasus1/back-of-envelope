@@ -223,15 +223,15 @@ export function InterviewStepper() {
         </div>
       </div>
 
-      {/* Main 2-Column Split: Column 1 = Probing Questions List | Column 2 = Corresponding Calculation Notes */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 min-h-0 items-start">
-        {/* Left: Probing Questions Stepper */}
-        <div className="lg:col-span-5 space-y-2 overflow-y-auto pr-1 max-h-[320px] lg:max-h-[580px]">
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-              Probing Questions Stepper
+      {/* Main 2-Column Split: Column 1 = PROBING Questions List | Column 2 = SIZING Calculation Notes */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-4 lg:gap-5 min-h-0 items-start">
+        {/* Left: PROBING Column */}
+        <div className="md:col-span-5 space-y-2 overflow-y-auto pr-1 max-h-[380px] md:max-h-[620px]">
+          <div className="flex items-center justify-between mb-1.5 px-1 py-1 rounded bg-white/[0.02] border border-white/[0.06]">
+            <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold block">
+              PROBING
             </span>
-            <span className="text-[9.5px] font-mono text-indigo-400">8 Steps</span>
+            <span className="text-[9.5px] font-mono text-zinc-400">8 Questions</span>
           </div>
 
           <div className="space-y-2">
@@ -283,13 +283,13 @@ export function InterviewStepper() {
           </div>
         </div>
 
-        {/* Right: Corresponding Calculation Area & Derivation Notes */}
-        <div className="lg:col-span-7 rounded-xl border border-white/[0.08] bg-[#090a0f] p-3.5 sm:p-5 flex flex-col justify-between space-y-4">
+        {/* Right: SIZING Column & Corresponding Calculation Area */}
+        <div className="md:col-span-7 rounded-xl border border-white/[0.08] bg-[#090a0f] p-3.5 sm:p-5 flex flex-col justify-between space-y-4">
           {/* Active Question Guidance & Dialogue */}
           <div className="space-y-2 pb-3 border-b border-white/[0.06]">
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold block">
-                Interactive Sizing & Applied Derivations
+            <div className="flex items-center justify-between gap-2 flex-wrap pb-1 px-1 py-1 rounded bg-white/[0.02] border border-white/[0.06]">
+              <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-300 font-bold block">
+                SIZING
               </span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/15 border border-indigo-500/30 text-indigo-300 font-semibold shrink-0">
                 Step {activeStep + 1} of 8

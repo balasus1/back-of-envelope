@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useStore } from '../lib/store';
 import {
-  Home,
   Sliders,
   Users,
   Globe,
@@ -33,6 +32,7 @@ import {
   PanelLeftOpen,
 } from 'lucide-react';
 import clsx from 'clsx';
+import { TriangleScaleIcon } from './Icons';
 
 interface RouteGroup {
   title: string;
@@ -47,7 +47,6 @@ const routeGroups: RouteGroup[] = [
   {
     title: 'CONFIGURATION',
     items: [
-      { name: 'Home / Landing', path: '/', icon: Home },
       { name: 'Control Panel', path: '/studio', icon: Sliders },
     ],
   },
@@ -112,33 +111,27 @@ export function Sidebar() {
       <aside
         className={clsx(
           'hidden md:flex bg-[#0a0b10] border-r border-white/[0.08] h-screen flex-col flex-shrink-0 font-sans select-none no-print transition-all duration-200 relative z-30',
-          isCollapsed ? 'w-16' : 'w-60'
+          isCollapsed ? 'w-12' : 'w-[150px]'
         )}
       >
         {/* Header with Prominent Expand/Collapse Button */}
-        <div className="p-3 border-b border-white/[0.08] bg-[#0d0e15] flex items-center justify-between flex-shrink-0 h-13">
+        <div className="p-2 border-b border-white/[0.08] bg-[#0d0e15] flex items-center justify-between flex-shrink-0 h-11">
           {!isCollapsed ? (
             <>
-              <Link href="/" className="flex items-center gap-2 min-w-0 group" title="System Design Studio">
-                <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md shrink-0">
-                  <Radio size={14} className="text-white" />
-                </div>
-                <div className="truncate">
-                  <h1 className="text-xs font-bold text-white tracking-tight leading-none truncate">
-                    System Design
-                  </h1>
-                  <span className="text-[10px] text-zinc-400 font-mono">Studio</span>
+              <Link href="/" className="flex items-center gap-1.5 min-w-0 group" title="System Design">
+                <div className="w-6 h-6 rounded-md bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md shrink-0">
+                  <TriangleScaleIcon size={13} className="text-white" />
                 </div>
               </Link>
 
               <button
                 type="button"
                 onClick={() => setIsCollapsed(true)}
-                className="p-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                className="p-1 rounded-md border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.08] text-zinc-400 hover:text-white transition-colors cursor-pointer"
                 title="Collapse Menu (Show icons only)"
                 aria-label="Collapse Menu"
               >
-                <PanelLeftClose size={16} />
+                <PanelLeftClose size={15} />
               </button>
             </>
           ) : (
@@ -146,57 +139,58 @@ export function Sidebar() {
               <button
                 type="button"
                 onClick={() => setIsCollapsed(false)}
-                className="w-10 h-10 rounded-lg border border-indigo-500/30 bg-indigo-950/40 hover:bg-indigo-900/60 text-indigo-300 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-sm"
+                className="w-8 h-8 rounded-lg border border-indigo-500/30 bg-indigo-950/40 hover:bg-indigo-900/60 text-indigo-300 hover:text-white transition-all flex items-center justify-center cursor-pointer shadow-sm"
                 title="Expand Menu (Show text names)"
                 aria-label="Expand Menu"
               >
-                <PanelLeftOpen size={18} />
+                <PanelLeftOpen size={16} />
               </button>
             </div>
           )}
         </div>
 
         {/* Navigation Area with Hidden Scrollbar */}
-        <nav className="flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-3">
+        <nav className="flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden py-2">
           {/* Collapsed State: ICONS ONLY */}
           {isCollapsed ? (
-            <div className="flex flex-col items-center space-y-3 px-2">
+            <div className="flex flex-col items-center space-y-2.5 px-1">
               {routeGroups.map((group) => (
                 <div key={group.title} className="w-full flex flex-col items-center space-y-1">
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const isActive = pathname === item.path;
                     return (
-                      <div key={item.path} className="relative group/tooltip w-full flex justify-center">
+                      <div key={item.path} className="relative group w-full flex justify-center">
                         <Link
                           href={item.path}
+                          title={item.name}
                           className={clsx(
-                            'w-10 h-10 rounded-xl flex items-center justify-center transition-all',
+                            'w-8 h-8 rounded-lg flex items-center justify-center transition-all',
                             isActive
-                              ? 'bg-indigo-600 text-white font-bold shadow-[0_0_12px_rgba(99,102,241,0.5)] border border-indigo-400/50'
+                              ? 'bg-indigo-600 text-white font-bold shadow-[0_0_10px_rgba(99,102,241,0.5)] border border-indigo-400/50'
                               : 'text-zinc-400 hover:text-white hover:bg-white/[0.06]'
                           )}
                         >
-                          <Icon size={16} />
+                          <Icon size={14} />
                         </Link>
 
                         {/* Floating Tooltip Label on Hover */}
-                        <div className="hidden group-hover/tooltip:block absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1.5 rounded-lg border border-white/[0.1] bg-[#0c0d14]/98 shadow-2xl text-xs font-semibold text-white whitespace-nowrap z-50 pointer-events-none animate-in fade-in duration-100">
+                        <div className="hidden group-hover:flex items-center absolute left-full ml-2.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-md border border-white/[0.15] bg-[#0e1017] shadow-2xl text-[11px] font-semibold text-white whitespace-nowrap z-50 pointer-events-none drop-shadow-lg">
                           {item.name}
                         </div>
                       </div>
                     );
                   })}
-                  <div className="w-5 h-[1px] bg-white/[0.06] my-1" />
+                  <div className="w-4 h-[1px] bg-white/[0.06] my-0.5" />
                 </div>
               ))}
             </div>
           ) : (
             /* Expanded State: CLEAN TEXT NAMES ONLY (NO ICONS, NO NUMBERING) */
-            <div className="space-y-4 px-3">
+            <div className="space-y-3 px-2">
               {routeGroups.map((group) => (
-                <div key={group.title} className="space-y-1">
-                  <div className="px-2 py-1 text-[9px] font-mono font-bold uppercase tracking-widest text-zinc-500">
+                <div key={group.title} className="space-y-0.5">
+                  <div className="px-1.5 py-0.5 text-[8.5px] font-mono font-bold uppercase tracking-widest text-zinc-500">
                     {group.title}
                   </div>
                   {group.items.map((item) => {
@@ -206,9 +200,9 @@ export function Sidebar() {
                         key={item.path}
                         href={item.path}
                         className={clsx(
-                          'block px-2.5 py-1.5 rounded-lg text-xs transition-all',
+                          'block px-1.5 py-1 rounded-md text-[11px] transition-all',
                           isActive
-                            ? 'bg-indigo-600/20 text-white font-semibold border border-indigo-500/40 shadow-sm'
+                            ? 'bg-indigo-600/25 text-white font-semibold border border-indigo-500/40 shadow-sm'
                             : 'text-zinc-300 hover:text-white hover:bg-white/[0.05]'
                         )}
                       >
@@ -248,9 +242,9 @@ export function Sidebar() {
             <div className="p-3.5 border-b border-white/[0.08] bg-[#0d0e15] flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-md">
-                  <Radio size={14} className="text-white" />
+                  <TriangleScaleIcon size={14} className="text-white" />
                 </div>
-                <h1 className="text-xs font-bold text-white">System Design Studio</h1>
+                <h1 className="text-xs font-bold text-white">System Design</h1>
               </div>
 
               <button

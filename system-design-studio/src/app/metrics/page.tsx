@@ -65,7 +65,7 @@ export default function UserMetricsPage() {
       formatted: `${Math.round(derivations.peakRps.value).toLocaleString()}`,
       unit: 'req/s',
       pct: 100,
-      badge: `${inputs.SAFETY_BUFFER}x buffer × ${inputs.Spike_Multiplier}x spike`,
+      badge: `${inputs.SAFETY_BUFFER}x buffer`,
       desc: 'The definitive anchor capacity number sizing all downstream gateways, microservices, databases, and message brokers.',
       color: 'from-rose-500/30 to-amber-500/30 border-amber-500/40 text-amber-300',
       metric: derivations.peakRps,
@@ -175,7 +175,7 @@ export default function UserMetricsPage() {
           <div className="py-2.5 flex items-center justify-between bg-indigo-950/20 px-2 rounded">
             <div>
               <span className="text-xs font-semibold text-indigo-200">4. Peak API RPS (Anchor)</span>
-              <p className="text-[11px] text-indigo-400/80">Raw_RPS × Safety_Buffer × Spike_Multiplier</p>
+              <p className="text-[11px] text-indigo-400/80">Raw_RPS × Safety_Buffer</p>
             </div>
             <Metric name="Peak RPS" metric={derivations.peakRps} />
           </div>

@@ -13,8 +13,8 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL('https://systemdesign.balashan.dev'),
   title: {
-    default: 'System Design Studio — Free Back-of-the-Envelope Calculator & Interview Rubric',
-    template: '%s | System Design Studio',
+    default: 'System Design — Free Back-of-the-Envelope Calculator & Interview Rubric',
+    template: '%s | System Design',
   },
   description:
     'Free back-of-the-envelope calculation engine and 16-layer architecture rubric for software engineering interviews. Derive Peak RPS, Kafka brokers, DB replicas, cache RAM, and cloud costs with zero guesswork. 100% free, no sign-up required.',
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Bala Shan', url: 'https://balashan.dev' }],
   creator: 'Bala Shan',
-  publisher: 'System Design Studio',
+  publisher: 'System Design',
   robots: {
     index: true,
     follow: true,
@@ -49,14 +49,14 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://systemdesign.balashan.dev',
-    siteName: 'System Design Studio',
-    title: 'System Design Studio — Free Back-of-the-Envelope Calculator & Interview Rubric',
+    siteName: 'System Design',
+    title: 'System Design — Free Back-of-the-Envelope Calculator & Interview Rubric',
     description:
       'Master back-of-the-envelope calculations and probing questions for FAANG system design interviews. 100% free with no login or credit card required.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'System Design Studio — Free Back-of-the-Envelope Calculator & Interview Rubric',
+    title: 'System Design — Free Back-of-the-Envelope Calculator & Interview Rubric',
     description:
       'Stop failing system design interviews on basic capacity estimations. Derive Peak RPS, storage, brokers, and cloud costs in seconds. 100% free.',
   },
@@ -73,7 +73,7 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'SoftwareApplication',
-    name: 'System Design Studio',
+    name: 'System Design',
     applicationCategory: 'EducationalApplication',
     operatingSystem: 'All',
     offers: {
@@ -84,10 +84,22 @@ export default function RootLayout({
     description:
       'Production-grade system design back-of-the-envelope interview calculation engine and 16-layer architecture grading rubric.',
     url: 'https://systemdesign.balashan.dev',
+    codeRepository: 'https://github.com/balasus1/back-of-envelope',
+    sameAs: [
+      'https://github.com/balasus1/back-of-envelope',
+      'https://x.com/balashan0027',
+      'https://linkedin.com/in/spike0027',
+      'https://portfolio.balashan.dev',
+    ],
     author: {
       '@type': 'Person',
       name: 'Bala Shan',
-      url: 'https://balashan.dev',
+      url: 'https://portfolio.balashan.dev',
+      sameAs: [
+        'https://github.com/balasus1',
+        'https://x.com/balashan0027',
+        'https://linkedin.com/in/spike0027',
+      ],
     },
   };
 

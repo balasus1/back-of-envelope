@@ -99,10 +99,11 @@ export default function SpikesPage() {
               <tr>
                 <td className="py-2.5 px-4 font-medium text-white">Peak API RPS</td>
                 {scenarios.map((s) => {
-                  const d = getDerivationsForScenario(s.name);
+                  const normalPeakRps = getDerivationsForScenario('Normal').peakRps.value;
+                  const spikeRps = normalPeakRps * s.multiplier;
                   return (
                     <td key={s.name} className="py-2.5 px-3 text-right font-mono font-semibold text-amber-300">
-                      {Math.round(d.peakRps.value).toLocaleString()}
+                      {Math.round(spikeRps).toLocaleString()}
                     </td>
                   );
                 })}

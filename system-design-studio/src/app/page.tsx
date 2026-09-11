@@ -130,7 +130,7 @@ export default function LandingPage() {
     },
     {
       q: 'Can I contribute or add new architecture sheets to this product?',
-      a: 'Yes, absolutely! System Design Studio is completely open-source under a free permissive license. You are welcome to fork the GitHub repository, add new distributed system patterns, expand formula calculators, or submit improvements via Pull Requests (PRs). We welcome community contributions to help engineers worldwide.',
+      a: 'Yes, absolutely! System Design is open-source under the Creative Commons Attribution-NonCommercial (CC BY-NC 4.0) license. You are welcome to fork the GitHub repository, add new distributed system patterns, expand formula calculators, or submit improvements via Pull Requests (PRs). Commercial use and charging job seekers for access is strictly prohibited to keep this resource 100% free forever.',
     },
     {
       q: 'Is this really 100% free with no sign-up or credit card?',
@@ -160,14 +160,14 @@ export default function LandingPage() {
         {/* Eyebrow Pill */}
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-950/40 text-indigo-300 text-xs font-mono font-medium shadow-sm">
           <Sparkles size={14} className="text-indigo-400 shrink-0" />
-          <span>Calculate like an <strong className="text-white font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent">Architect</strong></span>
+          <span>The Missing Skill Between<strong className="text-white font-bold bg-gradient-to-r from-indigo-300 to-purple-300 bg-clip-text text-transparent"> Code &amp; Whiteboard</strong></span>
         </div>
 
         {/* Main Headline */}
         <div className="space-y-4 max-w-4xl mx-auto">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-[1.15]">
             <span className="block text-2xl sm:text-4xl md:text-5xl text-indigo-200 font-bold mb-3 tracking-normal">
-              Understand → Practice → Repeat
+              Practice Daily
             </span>
             <span className="bg-gradient-to-r from-indigo-400 via-purple-300 to-emerald-400 bg-clip-text text-transparent">
               Master Back-of-the-Envelope Math
@@ -179,30 +179,14 @@ export default function LandingPage() {
           </p>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 pt-2">
+        {/* CTA Button */}
+        <div className="flex items-center justify-center pt-2">
           <Link
             href="/studio"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all cursor-pointer group"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-sm sm:text-base shadow-xl shadow-indigo-500/25 hover:shadow-indigo-500/40 transition-all cursor-pointer group"
           >
-            <span>Launch Free Interactive Studio</span>
+            <span>Learn Estimation</span>
             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          <Link
-            href="/concepts"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-indigo-500/40 bg-indigo-950/30 hover:bg-indigo-950/50 text-indigo-200 font-semibold text-sm sm:text-base transition-all"
-          >
-            <Sparkles size={16} className="text-indigo-400" />
-            <span>30 Concepts Math Primer</span>
-          </Link>
-
-          <Link
-            href="/rubric"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl border border-white/[0.1] bg-[#0e1017] hover:bg-white/[0.05] text-zinc-200 font-semibold text-sm sm:text-base transition-all"
-          >
-            <ShieldCheck size={16} className="text-emerald-400" />
-            <span>16-Layer Rubric</span>
           </Link>
         </div>
 
